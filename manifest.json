@@ -1,0 +1,52 @@
+{
+   "action": {
+      "default_icon": "images/icons/icon-48.png",
+      "default_popup": "popup.html",
+      "default_title": "MyVirtualPet"
+   },
+   "background": {
+      "service_worker": "src/background.js"
+   },
+   "content_scripts": [
+      {
+         "matches": [
+            "https://*/*"
+         ],
+         "js": [
+            "src/spine-player.min.js",
+            "src/content-script.js"
+         ],
+         "css": [
+            "style/content-style.css"
+         ],
+         "all_frames": false,
+         "run_at": "document_idle"
+      }
+   ],
+   "description": "MyVirtualPet",
+   "host_permissions": [
+      "https://*/*"
+   ],
+   "icons": {
+      "128": "images/icons/icon-128.png",
+      "48": "images/icons/icon-48.png"
+   },
+   "manifest_version": 3,
+   "name": "MyVirtualPet",
+   "options_page": "popup.html",
+   "permissions": [
+      "activeTab",
+      "storage"
+   ],
+   "version": "0.0.0",
+   "web_accessible_resources": [
+      {
+         "resources": [
+            "assets/*"
+         ],
+         "matches": [
+            "https://*/*"
+         ]
+      }
+   ]
+}
