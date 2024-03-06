@@ -14,7 +14,8 @@
          ],
          "js": [
             "src/spine-player.min.js",
-            "src/content-script.js"
+            "src/content-script.js",
+            "src/edge-detector.js"
          ],
          "css": [
             "style/content-style.css"

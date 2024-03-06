@@ -7,3 +7,15 @@
     bottom: 0px;
     z-index: 999999999;
 }
+
+.vp-debug-mode .vp-edge-detector-text {
+    border: solid 1px #00FF00 !important;
+}
+
+.vp-debug-mode .vp-edge-detector-full {
+    border: solid 1px #FF0000 !important;
+}
+
+.vp-debug-mode .vp-edge-detector-partial {
+    border: dashed 1px #0000FF !important;
+}

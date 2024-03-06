@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:spine_flutter/spine_widget.dart';
@@ -40,6 +38,9 @@ class _HomePageState extends State<HomePage> {
                 /// it will open the overlay settings page and return `true` once the permission granted.
                 final bool? status =
                     await FlutterOverlayWindow.requestPermission();
+                    if(status != null && status) {
+                      // Do something, right?
+                    }
               }
 
               await FlutterOverlayWindow.showOverlay(
