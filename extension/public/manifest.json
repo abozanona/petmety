@@ -5,7 +5,7 @@
       "default_title": "MyVirtualPet"
    },
    "background": {
-      "service_worker": "src/background.js"
+      "service_worker": "js/backgound.bundle.js"
    },
    "content_scripts": [
       {
@@ -13,9 +13,8 @@
             "https://*/*"
          ],
          "js": [
-            "src/spine-player.min.js",
-            "src/content-script.js",
-            "src/edge-detector.js"
+            "js/spine-player.min.js",
+            "js/content-script.bundle.js"
          ],
          "css": [
             "style/content-style.css"

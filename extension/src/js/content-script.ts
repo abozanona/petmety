@@ -1,4 +1,6 @@
-var elem = document.createElement('div');
+import { EdgeDetector } from './edge-detector'
+
+const elem = document.createElement('div');
 elem.innerHTML = '<div id="vp-player-container"></div>';
 document.body.appendChild(elem.childNodes[0])
 
@@ -10,3 +12,9 @@ new spine.SpinePlayer("vp-player-container", {
     showControls: false,
     alpha: true,
 });
+
+
+const edgeDetector = new EdgeDetector({
+    // debugMode: true
+});
+edgeDetector.injectCalculator();

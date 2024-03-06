@@ -1,6 +1,6 @@
 const minNodeWidth = 200, minNodeHeight = 1;
 
-class EdgeDetector {
+export class EdgeDetector {
     nodesCount = 0;
     defaultOptions = {
         startNode: document.body,
@@ -113,8 +113,3 @@ class EdgeDetector {
         });
     }
 }
-
-const edgeDetector = new EdgeDetector({
-    // debugMode: true
-});
-edgeDetector.injectCalculator();
