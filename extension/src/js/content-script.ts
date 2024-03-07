@@ -1,5 +1,6 @@
 import { EdgeDetector } from './edge-detector'
 import { AnimationHelper } from './animation-helper'
+import { store } from './store'
 declare const spine: any
 const elementId = "vp-player-container";
 const elementSelector = `#${elementId}`;
@@ -19,9 +20,13 @@ new spine.SpinePlayer(elementId, {
 
 
 const edgeDetector = new EdgeDetector({
-    // debugMode: true,
+    debugMode: true,
     ignoreSelector: elementSelector,
 });
 edgeDetector.injectCalculator();
 
-new AnimationHelper(elementSelector).init()
+const animationHelper = new AnimationHelper(elementSelector)
+animationHelper.init();
+
+store.edgeDetector = edgeDetector;
+store.animationHelper = animationHelper;

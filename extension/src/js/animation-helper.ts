@@ -1,4 +1,6 @@
-import { gsap, Draggable } from "gsap/all";
+import { gsap } from "gsap"
+import { Draggable } from "gsap/Draggable"
+import { store } from "./store";
 
 export class AnimationHelper {
     private selector: string;
@@ -12,9 +14,10 @@ export class AnimationHelper {
         Draggable.create(this.selector, {
             type: "x,y",
             onDragEnd: function (e: any) {
-                const moveTo = { x: e.layerX, y: 0 }
-                const distance: number = Math.sqrt(Math.pow(e.layerX - moveTo.x, 2) + Math.pow(e.layerY - moveTo.y, 2))
-                gsap.to(_this.selector, { x: moveTo.x, y: moveTo.y, scale: 1, duration: distance / 100 });
+                // On dragging the pet, drop vertically
+                const moveTo = { y: 0 }
+                const distance: number = Math.sqrt(Math.pow(e.layerY - moveTo.y, 2))
+                gsap.to(_this.selector, { y: moveTo.y, duration: distance / 100 });
             },
         });
     }

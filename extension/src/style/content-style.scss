@@ -9,15 +9,51 @@
 }
 
 .vp-debug-mode {
-    .vp-edge-detector-text {
-        border: solid 1px #00FF00 !important;
+    .vp-edge-detector-top-text {
+        border-top: solid 1px #00FF00 !important;
     }
 
-    .vp-edge-detector-full {
-        border: solid 1px #FF0000 !important;
+    .vp-edge-detector-bottom-text {
+        border-bottom: solid 1px #00FF00 !important;
     }
 
-    .vp-edge-detector-partial {
-        border: dashed 1px #0000FF !important;
+    .vp-edge-detector-right-text {
+        border-right: solid 1px #00FF00 !important;
+    }
+
+    .vp-edge-detector-left-text {
+        border-left: solid 1px #00FF00 !important;
+    }
+
+    .vp-edge-detector-top-full {
+        border-top: solid 1px #FF0000 !important;
+    }
+
+    .vp-edge-detector-bottom-full {
+        border-bottom: solid 1px #FF0000 !important;
+    }
+
+    .vp-edge-detector-right-full {
+        border-right: solid 1px #FF0000 !important;
+    }
+
+    .vp-edge-detector-left-full {
+        border-left: solid 1px #FF0000 !important;
+    }
+
+    .vp-edge-detector-top-partial {
+        border-top: dashed 1px #0000FF !important;
+    }
+
+    .vp-edge-detector-bottom-partial {
+        border-bottom: dashed 1px #0000FF !important;
+    }
+
+    .vp-edge-detector-right-partial {
+        border-right: dashed 1px #0000FF !important;
+    }
+
+    .vp-edge-detector-left-partial {
+        border-left: dashed 1px #0000FF !important;
     }
 }

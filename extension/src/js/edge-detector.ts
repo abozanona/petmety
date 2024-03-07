@@ -6,6 +6,137 @@ type EdgeDetectorOptions = {
     ignoreSelector?: string;
 }
 
+enum EdgeOrientation {
+    HORIZONTAL,
+    VERTICAL,
+}
+
+type Edge = {
+    orientation: EdgeOrientation,
+    rectType: RectType,
+    start: {
+        x: number,
+        y: number,
+    },
+    end: {
+        x: number,
+        y: number,
+    },
+    size: number,
+}
+
+enum RectType {
+    DISTINGUISHABLE = 99,
+    TEXT = 50,
+    OTHER = 10,
+}
+
+type Rect = {
+    rectType: RectType;
+    visibility: RectVisibility;
+    translate: RectTranslate;
+}
+
+type RectVisibility = {
+    top: {
+        isVisible: boolean;
+        offset: number;
+    },
+    bottom: {
+        isVisible: boolean;
+        offset: number;
+    },
+    right: {
+        isVisible: boolean;
+        offset: number;
+    },
+    left: {
+        isVisible: boolean;
+        offset: number;
+    }
+}
+
+class RectTranslate {
+    private rect: DOMRect
+    private rectType: RectType
+    public constructor(rect: DOMRect, rectType: RectType) {
+        this.rect = rect;
+        this.rectType = rectType;
+    }
+
+    public get topEdge(): Edge {
+        return {
+            orientation: EdgeOrientation.HORIZONTAL,
+            rectType: this.rectType,
+            start: {
+                x: this.rect.x,
+                y: this.rect.y,
+            },
+            end: {
+                x: this.rect.x + this.rect.width,
+                y: this.rect.y,
+            },
+            size: this.rect.width,
+        }
+    }
+
+    public get bottomEdge(): Edge {
+        return {
+            orientation: EdgeOrientation.HORIZONTAL,
+            rectType: this.rectType,
+            start: {
+                x: this.rect.x,
+                y: this.rect.y + this.rect.height,
+            },
+            end: {
+                x: this.rect.x + this.rect.width,
+                y: this.rect.y + this.rect.height,
+            },
+            size: this.rect.width,
+        }
+    }
+
+    public get rightEdge(): Edge {
+        return {
+            orientation: EdgeOrientation.VERTICAL,
+            rectType: this.rectType,
+            start: {
+                x: this.rect.x + this.rect.width,
+                y: this.rect.y,
+            },
+            end: {
+                x: this.rect.x + this.rect.width,
+                y: this.rect.y + this.rect.height,
+            },
+            size: this.rect.height,
+        }
+    }
+
+    public get leftEdge(): Edge {
+        return {
+            orientation: EdgeOrientation.VERTICAL,
+            rectType: this.rectType,
+            start: {
+                x: this.rect.x,
+                y: this.rect.y,
+            },
+            end: {
+                x: this.rect.x,
+                y: this.rect.y + this.rect.height,
+            },
+            size: this.rect.height,
+        }
+    }
+
+    public get width() {
+        return this.rect.width;
+    }
+
+    public get height() {
+        return this.rect.height;
+    }
+}
+
 export class EdgeDetector {
     private nodesCount: number = 0;
     private defaultOptions: EdgeDetectorOptions = {
@@ -15,20 +146,80 @@ export class EdgeDetector {
     };
     private options: EdgeDetectorOptions;
 
+    private _foundRects: Rect[]
+
     constructor(opt: EdgeDetectorOptions) {
         this.nodesCount = 0;
         this.options = { ...this.defaultOptions, ...opt }
+        this._foundRects = [];
     }
 
-    isRectInViewPort(rect: DOMRect) {
-        const viewPortBottom: number = window.innerHeight || document.documentElement.clientHeight;
-        const viewPortRight: number = window.innerWidth || document.documentElement.clientWidth;
+    public get edges() {
+        return this._foundRects;
+    }
 
-        // // check if element is completely visible inside the viewport
-        // return (rect.top >= 0 && rect.left >= 0 && rect.bottom <= viewPortBottom && rect.right <= viewPortRight);
+    public get horizontalRects(): Rect[] {
+        return this._foundRects.filter(edge => edge.visibility.top || edge.visibility.bottom);
+    }
 
-        // check if element is visible inside the viewport
-        return (rect.top >= 0 || rect.bottom <= viewPortBottom);
+    public get verticalRects(): Rect[] {
+        return this._foundRects.filter(edge => edge.visibility.right || edge.visibility.left);
+    }
+
+    public get horizontalEdges(): Edge[] {
+        return this._foundRects.filter(edge => edge.visibility.top || edge.visibility.bottom).flatMap(edge =>
+            [].concat(
+                edge.visibility.top ? edge.translate.topEdge : [],
+                edge.visibility.bottom ? edge.translate.bottomEdge : []
+            )
+        );
+    }
+
+    public get topEdges(): Edge[] {
+        return this._foundRects.filter(edge => edge.visibility.top).flatMap(edge =>
+            [].concat(
+                edge.visibility.top ? edge.translate.topEdge : [],
+                edge.visibility.bottom ? edge.translate.bottomEdge : []
+            )
+        );
+    }
+
+    public get verticalEdges(): Edge[] {
+        return this._foundRects.filter(edge => edge.visibility.right || edge.visibility.left).flatMap(edge =>
+            [].concat(
+                edge.visibility.right ? edge.translate.rightEdge : [],
+                edge.visibility.left ? edge.translate.leftEdge : []
+            )
+        );
+    }
+
+    getRectEdgesInViewPort(rect: DOMRect): RectVisibility {
+        const viewPortHeight: number = window.innerHeight || document.documentElement.clientHeight;
+        const viewPortWidth: number = window.innerWidth || document.documentElement.clientWidth;
+
+        const isTop = rect.top >= 0 && rect.top <= viewPortHeight;
+        const isBottom = rect.bottom <= viewPortHeight && rect.bottom >= 0;
+        const isRight = rect.right <= viewPortWidth;
+        const isLeft = rect.left >= 0;
+
+        return {
+            top: {
+                isVisible: isTop,// && (isRight || isLeft),
+                offset: rect.top,
+            },
+            bottom: {
+                isVisible: isBottom,// && (isRight || isLeft),
+                offset: viewPortHeight - rect.bottom,
+            },
+            right: {
+                isVisible: isRight && (isTop || isBottom),
+                offset: viewPortWidth - rect.right,
+            },
+            left: {
+                isVisible: isLeft && (isTop || isBottom),
+                offset: rect.left,
+            },
+        };
     }
 
     injectCalculator() {
@@ -37,12 +228,14 @@ export class EdgeDetector {
         } else {
             document.body.classList.remove("vp-debug-mode")
         }
+        this._foundRects = [];
         this.caclulateEdges(this.options.startNode)
         let isScrolling: NodeJS.Timeout;
         let _this = this;
         document.addEventListener("scroll", (event) => {
             window.clearTimeout(isScrolling);
             isScrolling = setTimeout(function () {
+                _this._foundRects = [];
                 _this.caclulateEdges(_this.options.startNode)
             }, 93);
         })
@@ -80,11 +273,29 @@ export class EdgeDetector {
             nodeRect = node.getBoundingClientRect();
         }
         // Ignore nodes outside viewport
-        if (!this.isRectInViewPort(nodeRect)) {
+        const edgesVisibility = this.getRectEdgesInViewPort(nodeRect);
+        if (!edgesVisibility.top.isVisible && !edgesVisibility.bottom.isVisible && !edgesVisibility.right.isVisible && !edgesVisibility.left.isVisible) {
             addNode = false;
-            node.classList.remove("vp-edge-detector-text");
-            node.classList.remove("vp-edge-detector-full");
-            node.classList.remove("vp-edge-detector-partial");
+        }
+        if (!edgesVisibility.top.isVisible) {
+            node.classList.remove("vp-edge-detector-top-text");
+            node.classList.remove("vp-edge-detector-top-full");
+            node.classList.remove("vp-edge-detector-top-partial");
+        }
+        if (!edgesVisibility.bottom.isVisible) {
+            node.classList.remove("vp-edge-detector-bottom-text");
+            node.classList.remove("vp-edge-detector-bottom-full");
+            node.classList.remove("vp-edge-detector-bottom-partial");
+        }
+        if (!edgesVisibility.right.isVisible) {
+            node.classList.remove("vp-edge-detector-right-text");
+            node.classList.remove("vp-edge-detector-right-full");
+            node.classList.remove("vp-edge-detector-right-partial");
+        }
+        if (!edgesVisibility.left.isVisible) {
+            node.classList.remove("vp-edge-detector-left-text");
+            node.classList.remove("vp-edge-detector-left-full");
+            node.classList.remove("vp-edge-detector-left-partial");
         }
         // Don't add small nodes
         if (nodeRect.width < minNodeWidth || nodeRect.height < minNodeHeight) {
@@ -99,9 +310,22 @@ export class EdgeDetector {
         }
         if (addNode) {
             this.nodesCount++;
+            let rectType: RectType = RectType.OTHER;
             if (node.nodeType === Node.TEXT_NODE || ['b', 'strong', 'i', 'em', 'mark', 'small', 'del', 'ins', 'sub', 'sup', 'span', 'p', 'code'].includes(node.tagName?.toLowerCase())) {
                 // If it's a text or an inline element
-                node.classList.add("vp-edge-detector-text")
+                if (edgesVisibility.top.isVisible) {
+                    node.classList.add("vp-edge-detector-top-text")
+                }
+                if (edgesVisibility.bottom.isVisible) {
+                    node.classList.add("vp-edge-detector-bottom-text")
+                }
+                if (edgesVisibility.right.isVisible) {
+                    node.classList.add("vp-edge-detector-right-text")
+                }
+                if (edgesVisibility.left.isVisible) {
+                    node.classList.add("vp-edge-detector-left-text")
+                }
+                rectType = RectType.TEXT;
             } else if (
                 // If we have difference in top
                 (window.getComputedStyle(node).borderStyle !== 'none' && window.getComputedStyle(node).borderTopColor && (window.getComputedStyle(node).borderTopColor !== window.getComputedStyle(node).backgroundColor || window.getComputedStyle(node).borderTopColor !== window.getComputedStyle(node.parentNode as HTMLElement).backgroundColor)) ||
@@ -111,11 +335,40 @@ export class EdgeDetector {
                 window.getComputedStyle(node).backgroundColor !== window.getComputedStyle((node.parentNode as HTMLElement)).backgroundColor
             ) {
                 // If element has border || has different background from it's parent
-                node.classList.add("vp-edge-detector-full")
+                if (edgesVisibility.top.isVisible) {
+                    node.classList.add("vp-edge-detector-top-full")
+                }
+                if (edgesVisibility.bottom.isVisible) {
+                    node.classList.add("vp-edge-detector-bottom-full")
+                }
+                if (edgesVisibility.right.isVisible) {
+                    node.classList.add("vp-edge-detector-right-full")
+                }
+                if (edgesVisibility.left.isVisible) {
+                    node.classList.add("vp-edge-detector-left-full")
+                }
+                rectType = RectType.DISTINGUISHABLE;
             } else {
                 // If it shares same area with parent
-                node.classList.add("vp-edge-detector-partial")
+                if (edgesVisibility.top.isVisible) {
+                    node.classList.add("vp-edge-detector-top-partial")
+                }
+                if (edgesVisibility.bottom.isVisible) {
+                    node.classList.add("vp-edge-detector-bottom-partial")
+                }
+                if (edgesVisibility.right.isVisible) {
+                    node.classList.add("vp-edge-detector-right-partial")
+                }
+                if (edgesVisibility.left.isVisible) {
+                    node.classList.add("vp-edge-detector-left-partial")
+                }
+                rectType = RectType.OTHER;
             }
+            this._foundRects.push({
+                rectType: rectType,
+                visibility: edgesVisibility,
+                translate: new RectTranslate(nodeRect, rectType),
+            })
         }
         let _this = this;
         node.childNodes.forEach(element => {
