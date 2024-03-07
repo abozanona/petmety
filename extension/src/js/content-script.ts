@@ -1,11 +1,15 @@
 import { EdgeDetector } from './edge-detector'
+import { AnimationHelper } from './animation-helper'
+declare const spine: any
+const elementId = "vp-player-container";
+const elementSelector = `#${elementId}`;
 
 const elem = document.createElement('div');
-elem.innerHTML = '<div id="vp-player-container"></div>';
+elem.innerHTML = `<div id="${elementId}"></div>`;
 document.body.appendChild(elem.childNodes[0])
 
 
-new spine.SpinePlayer("vp-player-container", {
+new spine.SpinePlayer(elementId, {
     jsonUrl: chrome.runtime.getURL("/assets/cat.json"),
     atlasUrl: chrome.runtime.getURL("/assets/cat.atlas"),
     animation: "Idle",
@@ -15,6 +19,9 @@ new spine.SpinePlayer("vp-player-container", {
 
 
 const edgeDetector = new EdgeDetector({
-    // debugMode: true
+    // debugMode: true,
+    ignoreSelector: elementSelector,
 });
 edgeDetector.injectCalculator();
+
+new AnimationHelper(elementSelector).init()

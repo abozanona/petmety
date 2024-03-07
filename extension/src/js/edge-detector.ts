@@ -1,21 +1,28 @@
 const minNodeWidth = 200, minNodeHeight = 1;
 
+type EdgeDetectorOptions = {
+    startNode?: HTMLElement;
+    debugMode?: boolean;
+    ignoreSelector?: string;
+}
+
 export class EdgeDetector {
-    nodesCount = 0;
-    defaultOptions = {
+    private nodesCount: number = 0;
+    private defaultOptions: EdgeDetectorOptions = {
         startNode: document.body,
         debugMode: false,
+        ignoreSelector: "#vp-player-container",
     };
-    options;
+    private options: EdgeDetectorOptions;
 
-    constructor(opt) {
+    constructor(opt: EdgeDetectorOptions) {
         this.nodesCount = 0;
         this.options = { ...this.defaultOptions, ...opt }
     }
 
-    isRectInViewPort(rect) {
-        const viewPortBottom = window.innerHeight || document.documentElement.clientHeight;
-        const viewPortRight = window.innerWidth || document.documentElement.clientWidth;
+    isRectInViewPort(rect: DOMRect) {
+        const viewPortBottom: number = window.innerHeight || document.documentElement.clientHeight;
+        const viewPortRight: number = window.innerWidth || document.documentElement.clientWidth;
 
         // // check if element is completely visible inside the viewport
         // return (rect.top >= 0 && rect.left >= 0 && rect.bottom <= viewPortBottom && rect.right <= viewPortRight);
@@ -31,7 +38,7 @@ export class EdgeDetector {
             document.body.classList.remove("vp-debug-mode")
         }
         this.caclulateEdges(this.options.startNode)
-        let isScrolling;
+        let isScrolling: NodeJS.Timeout;
         let _this = this;
         document.addEventListener("scroll", (event) => {
             window.clearTimeout(isScrolling);
@@ -41,11 +48,14 @@ export class EdgeDetector {
         })
     }
 
-    caclulateEdges(node, level) {
+    caclulateEdges(node: HTMLElement, level: number = 0) {
+        if (node.matches && node.matches(this.options.ignoreSelector)) {
+            return;
+        }
         // Remove old classes
         let addNode = true;
         // Don't add non-renereable nodes
-        if ([Node.COMMENT_NODE, Node.CDATA_SECTION_NODE, Node.PROCESSING_INSTRUCTION_NODE, Node.DOCUMENT_TYPE_NODE].includes(node.nodeType)) {
+        if ([+Node.COMMENT_NODE, +Node.CDATA_SECTION_NODE, +Node.PROCESSING_INSTRUCTION_NODE, +Node.DOCUMENT_TYPE_NODE].includes(node.nodeType)) {
             return;
         }
         // Don't add hidden nodes
@@ -82,7 +92,7 @@ export class EdgeDetector {
         }
         // Don't add nodes that has same size as parent node, but still loob thru child nodes
         if (node.parentNode) {
-            const parentRect = node.parentNode.getBoundingClientRect();
+            const parentRect = (node.parentNode as HTMLElement).getBoundingClientRect();
             if (Math.abs(nodeRect.width - parentRect.width) < 10 && Math.abs(nodeRect.height - parentRect.height) < 10) {
                 addNode = false;
             }
@@ -94,11 +104,11 @@ export class EdgeDetector {
                 node.classList.add("vp-edge-detector-text")
             } else if (
                 // If we have difference in top
-                (window.getComputedStyle(node).borderStyle !== 'none' && window.getComputedStyle(node).borderTopColor && (window.getComputedStyle(node).borderTopColor !== window.getComputedStyle(node).backgroundColor || window.getComputedStyle(node).borderTopColor !== window.getComputedStyle(node.parentNode).backgroundColor)) ||
+                (window.getComputedStyle(node).borderStyle !== 'none' && window.getComputedStyle(node).borderTopColor && (window.getComputedStyle(node).borderTopColor !== window.getComputedStyle(node).backgroundColor || window.getComputedStyle(node).borderTopColor !== window.getComputedStyle(node.parentNode as HTMLElement).backgroundColor)) ||
                 // If we have difference in bottom
-                (window.getComputedStyle(node).borderStyle !== 'none' && window.getComputedStyle(node).borderBottomColor && (window.getComputedStyle(node).borderBottomColor !== window.getComputedStyle(node).backgroundColor || window.getComputedStyle(node).borderBottomColor !== window.getComputedStyle(node.parentNode).backgroundColor)) ||
+                (window.getComputedStyle(node).borderStyle !== 'none' && window.getComputedStyle(node).borderBottomColor && (window.getComputedStyle(node).borderBottomColor !== window.getComputedStyle(node).backgroundColor || window.getComputedStyle(node).borderBottomColor !== window.getComputedStyle(node.parentNode as HTMLElement).backgroundColor)) ||
                 // If we have difference in backgroundColors
-                window.getComputedStyle(node).backgroundColor !== window.getComputedStyle(node.parentNode).backgroundColor
+                window.getComputedStyle(node).backgroundColor !== window.getComputedStyle((node.parentNode as HTMLElement)).backgroundColor
             ) {
                 // If element has border || has different background from it's parent
                 node.classList.add("vp-edge-detector-full")
@@ -109,7 +119,7 @@ export class EdgeDetector {
         }
         let _this = this;
         node.childNodes.forEach(element => {
-            _this.caclulateEdges(element, level + 1);
+            _this.caclulateEdges(element as HTMLElement, level + 1);
         });
     }
 }
