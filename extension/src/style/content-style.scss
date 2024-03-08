@@ -1,9 +1,7 @@
 #vp-player-container {
     width: 250px;
     height: 110px;
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute;
     bottom: 0px;
     z-index: 999999999;
 }

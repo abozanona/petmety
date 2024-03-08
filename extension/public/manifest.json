@@ -10,6 +10,7 @@
    "content_scripts": [
       {
          "matches": [
+            "http://*/*",
             "https://*/*"
          ],
          "js": [
@@ -25,6 +26,7 @@
    ],
    "description": "MyVirtualPet",
    "host_permissions": [
+      "http://*/*",
       "https://*/*"
    ],
    "icons": {
@@ -45,6 +47,7 @@
             "assets/*"
          ],
          "matches": [
+            "http://*/*",
             "https://*/*"
          ]
       }

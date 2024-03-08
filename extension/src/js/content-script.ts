@@ -20,7 +20,7 @@ new spine.SpinePlayer(elementId, {
 
 
 const edgeDetector = new EdgeDetector({
-    debugMode: true,
+    // debugMode: true,
     ignoreSelector: elementSelector,
 });
 edgeDetector.injectCalculator();

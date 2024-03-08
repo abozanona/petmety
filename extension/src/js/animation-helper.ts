@@ -13,11 +13,29 @@ export class AnimationHelper {
 
         Draggable.create(this.selector, {
             type: "x,y",
-            onDragEnd: function (e: any) {
-                // On dragging the pet, drop vertically
-                const moveTo = { y: 0 }
-                const distance: number = Math.sqrt(Math.pow(e.layerY - moveTo.y, 2))
-                gsap.to(_this.selector, { y: moveTo.y, duration: distance / 100 });
+            onDragEnd: function (e: any) { // On dragging the pet, drop vertically
+                const spriteRect = document.querySelector(_this.selector).getBoundingClientRect();
+
+                const edges = store
+                    .edgeDetector
+                    .topEdges
+                    .filter(el => el.start.y > e.clientY + spriteRect.height && el.start.x <= e.clientX && el.end.x >= e.clientX); // enges below the sprite
+
+                // Sort based on priority randomly, get edge with highest priority
+                edges.sort((a, b) => {
+                    return Math.random() * 10 * b.rectType * b.rectType - Math.random() * 10 * a.rectType * a.rectType;
+                })
+                const edge = edges[0];
+
+                const moveTo = {
+                    left: spriteRect.left + window.scrollX, // spriteX + scrollX
+                    top: edge.start.y + window.scrollY - spriteRect.height, //  edgeY + scrollY - spriteHeight
+                    x: 0,
+                    y: 0
+                }
+                // drop down with a constant speed
+                const distance: number = Math.sqrt(Math.pow(e.clientY - moveTo.y, 2))
+                gsap.to(_this.selector, { ...moveTo, duration: distance / 100 });
             },
         });
     }

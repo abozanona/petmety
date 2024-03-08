@@ -29,6 +29,7 @@ enum RectType {
     DISTINGUISHABLE = 99,
     TEXT = 50,
     OTHER = 10,
+    WINDOW = 0,
 }
 
 type Rect = {
@@ -229,6 +230,36 @@ export class EdgeDetector {
             document.body.classList.remove("vp-debug-mode")
         }
         this._foundRects = [];
+        // Add viewport edges
+        this._foundRects.push({
+            rectType: RectType.WINDOW,
+            visibility: {
+                top: {
+                    isVisible: true,
+                    offset: 0,
+                },
+                bottom: {
+                    isVisible: true,
+                    offset: 0,
+                },
+                right: {
+                    isVisible: true,
+                    offset: 0,
+                },
+                left: {
+                    isVisible: true,
+                    offset: 0,
+                }
+            },
+            translate: new RectTranslate(
+                new DOMRect(0,
+                    0,
+                    window.innerWidth || document.documentElement.clientWidth,
+                    window.innerHeight || document.documentElement.clientHeight
+                ),
+                RectType.WINDOW
+            ),
+        })
         this.caclulateEdges(this.options.startNode)
         let isScrolling: NodeJS.Timeout;
         let _this = this;
