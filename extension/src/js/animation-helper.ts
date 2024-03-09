@@ -13,6 +13,7 @@ export class AnimationHelper {
 
         Draggable.create(this.selector, {
             type: "x,y",
+            dragClickables: false,
             onDragEnd: function (e: any) { // On dragging the pet, drop vertically
                 const spriteRect = document.querySelector(_this.selector).getBoundingClientRect();
 

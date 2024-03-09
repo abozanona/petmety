@@ -44,7 +44,8 @@
    "web_accessible_resources": [
       {
          "resources": [
-            "assets/*"
+            "assets/*",
+            "templates/*"
          ],
          "matches": [
             "http://*/*",

@@ -1,32 +1,41 @@
 import { EdgeDetector } from './edge-detector'
 import { AnimationHelper } from './animation-helper'
 import { store } from './store'
+import { UtilsEngine } from './utils';
 declare const spine: any
-const elementId = "vp-player-container";
-const elementSelector = `#${elementId}`;
 
-const elem = document.createElement('div');
-elem.innerHTML = `<div id="${elementId}"></div>`;
-document.body.appendChild(elem.childNodes[0])
+(async () => {
+    const elementId = "vp-player-container";
+    const elementSelector = `#${elementId}`;
 
-
-new spine.SpinePlayer(elementId, {
-    jsonUrl: chrome.runtime.getURL("/assets/cat.json"),
-    atlasUrl: chrome.runtime.getURL("/assets/cat.atlas"),
-    animation: "Idle",
-    showControls: false,
-    alpha: true,
-});
+    const spriteTemplateHTML = await UtilsEngine.loadTemplate("/templates/sprite.template.html");
+    const elem = document.createElement('div');
+    elem.innerHTML = spriteTemplateHTML;
+    document.body.appendChild(elem.childNodes[0])
+    document.querySelector("#vp-sprite-menu-toggle").addEventListener('click', () => {
+        document.querySelector('.vp-sprite-menu-list').classList.remove('vp-hidden');
+        document.querySelector('#vp-sprite-menu-toggle').classList.add('vp-hidden');
+    })
 
 
-const edgeDetector = new EdgeDetector({
-    // debugMode: true,
-    ignoreSelector: elementSelector,
-});
-edgeDetector.injectCalculator();
+    new spine.SpinePlayer(elementId, {
+        jsonUrl: chrome.runtime.getURL("/assets/cat.json"),
+        atlasUrl: chrome.runtime.getURL("/assets/cat.atlas"),
+        animation: "Idle",
+        showControls: false,
+        alpha: true,
+    });
 
-const animationHelper = new AnimationHelper(elementSelector)
-animationHelper.init();
 
-store.edgeDetector = edgeDetector;
-store.animationHelper = animationHelper;
+    const edgeDetector = new EdgeDetector({
+        // debugMode: true,
+        ignoreSelector: elementSelector,
+    });
+    edgeDetector.injectCalculator();
+
+    const animationHelper = new AnimationHelper(elementSelector)
+    animationHelper.init();
+
+    store.edgeDetector = edgeDetector;
+    store.animationHelper = animationHelper;
+})()
