@@ -1,5 +1,5 @@
 import { EdgeDetector } from './edge-detector'
-import { AnimationHelper } from './animation-helper'
+import { AnimationEngine } from './animation-engine'
 import { store } from './store'
 import { UtilsEngine } from './utils';
 declare const spine: any
@@ -33,7 +33,7 @@ declare const spine: any
     });
     edgeDetector.injectCalculator();
 
-    const animationHelper = new AnimationHelper(elementSelector)
+    const animationHelper = new AnimationEngine(elementSelector)
     animationHelper.init();
 
     store.edgeDetector = edgeDetector;

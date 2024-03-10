@@ -2,7 +2,7 @@ import { gsap } from "gsap"
 import { Draggable } from "gsap/Draggable"
 import { store } from "./store";
 
-export class AnimationHelper {
+export class AnimationEngine {
     private selector: string;
     constructor(selector: string) {
         this.selector = selector;
