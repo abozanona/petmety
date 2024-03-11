@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "webpack --config webpack.prod.js",
+        "zip": "zip -r dist/dist.zip dist/*",
         "dev": "webpack --progress --config webpack.dev.js",
         "pretty": "prettier --write \"./**/*.{js,jsx,tsx,json,html,scss,css,ts}\""
     },
@@ -42,6 +43,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "gsap": "^3.12.5"
+        "gsap": "^3.12.5",
+        "pino": "^8.19.0"
     }
 }

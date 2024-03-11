@@ -11,21 +11,20 @@ enum EdgeOrientation {
     VERTICAL,
 }
 
-type Edge = {
+export type Point2d = {
+    x: number,
+    y: number,
+}
+
+export type Edge = {
     orientation: EdgeOrientation,
     rectType: RectType,
-    start: {
-        x: number,
-        y: number,
-    },
-    end: {
-        x: number,
-        y: number,
-    },
+    start: Point2d,
+    end: Point2d,
     size: number,
 }
 
-enum RectType {
+export enum RectType {
     DISTINGUISHABLE = 99,
     TEXT = 50,
     OTHER = 10,
@@ -192,6 +191,12 @@ export class EdgeDetector {
                 edge.visibility.left ? edge.translate.leftEdge : []
             )
         );
+    }
+
+    public static isPointInViewPort(point: Point2d) {
+        const viewPortHeight: number = window.innerHeight || document.documentElement.clientHeight;
+        const viewPortWidth: number = window.innerWidth || document.documentElement.clientWidth;
+        return point.x >= 0 && point.x <= viewPortWidth && point.y >= 0 && point.y <= viewPortHeight;
     }
 
     getRectEdgesInViewPort(rect: DOMRect): RectVisibility {

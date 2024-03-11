@@ -40,12 +40,13 @@
       "activeTab",
       "storage"
    ],
-   "version": "0.0.0",
+   "version": "1.0.0",
    "web_accessible_resources": [
       {
          "resources": [
             "assets/*",
-            "templates/*"
+            "templates/*",
+            "js/*.js.map"
          ],
          "matches": [
             "http://*/*",
