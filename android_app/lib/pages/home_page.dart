@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Virtual Pet')),
+      appBar: AppBar(title: const Text('Petmety')),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

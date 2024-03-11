@@ -1,10 +1,10 @@
-# My Virtual Pet
+# Petmety
 
-Welcome to the "My Virtual Pet" repository! This project is aimed at creating a Chrome extension that brings a virtual pet to your screen. With future plans to extend support to Android devices, this project aims to be your companion across platforms.
+Welcome to the Petmety repository! This project is aimed at creating a Chrome extension that brings a virtual pet to your screen. With future plans to extend support to Android devices, this project aims to be your companion across platforms.
 
 ## About
 
-"My Virtual Pet" is a fun project designed to bring a touch of joy and companionship to your browsing experience. The current version features a charming cat as your virtual pet, but there are ambitious plans to expand the range of pets, skins, motions, and functionalities in the future.
+Petmety is a fun project designed to bring a touch of joy and companionship to your browsing experience. The current version features a charming cat as your virtual pet, but there are ambitious plans to expand the range of pets, skins, motions, and functionalities in the future.
 
 ## Features
 
@@ -38,4 +38,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 For any questions or suggestions regarding the project, feel free to reach out to [abozanona@gmail.com].
 
-Thank you for your interest in "My Virtual Pet"! We hope you enjoy the company of your new digital companion. 🐾
+Thank you for your interest in Petmety! We hope you enjoy the company of your new digital companion. 🐾

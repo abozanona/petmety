@@ -1,5 +1,5 @@
 {
-    "name": "My virtual pet",
+    "name": "Petmety",
     "version": "1.0.0",
     "description": "A browser extension to get a virtual pet",
     "main": "index.js",
@@ -11,14 +11,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/abozanona/my-virtual-pet.git"
+        "url": "git+https://github.com/abozanona/petmety.git"
     },
     "keywords": [],
     "author": "",
     "bugs": {
-        "url": "https://github.com/abozanona/my-virtual-pet/issues"
+        "url": "https://github.com/abozanona/petmety/issues"
     },
-    "homepage": "https://github.com/abozanona/my-virtual-pet#readme",
+    "homepage": "https://github.com/abozanona/petmety#readme",
     "devDependencies": {
         "@babel/core": "^7.17.10",
         "@babel/preset-env": "^7.17.10",
