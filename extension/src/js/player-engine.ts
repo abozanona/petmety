@@ -23,9 +23,7 @@ export class PlayerEngine {
 
     constructor(selector: IdSelector) {
         this.elementId = selector.substring(1);
-    }
 
-    init() {
         this.playerController = new spine.SpinePlayer(this.elementId, {
             jsonUrl: chrome.runtime.getURL("/assets/cat.json"),
             atlasUrl: chrome.runtime.getURL("/assets/cat.atlas"),
@@ -47,5 +45,4 @@ export class PlayerEngine {
             }, 3000);
         }
     }
-
 }

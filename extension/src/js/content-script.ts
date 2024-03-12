@@ -14,7 +14,6 @@ import { PlayerEngine } from './player-engine';
     document.body.appendChild(elem.childNodes[0])
 
     const playerEngine = new PlayerEngine(elementSelector);
-    playerEngine.init();
 
     const edgeDetector = new EdgeDetector({
         // debugMode: true,
