@@ -13,7 +13,7 @@ export class MenuEngine {
         document.querySelector("#vp-btn-jump-to-another-place").addEventListener('click', () => {
             const edges = store.edgeDetector.topEdges.filter(edge => edge.rectType !== RectType.WINDOW);
             const edge = edges[Math.floor(Math.random() * edges.length)];
-            store.animationEngine.jumpToEdge(edge);
+            store.animationEngine.jumpToEdge(Math.random() < 0.5 ? edge.start : edge.end);
         });
 
         document.querySelector("#vp-btn-anim-idle").addEventListener('click', () => {
@@ -25,7 +25,7 @@ export class MenuEngine {
         });
 
         document.querySelector("#vp-btn-anim-jump").addEventListener('click', () => {
-             store.playerEngine.playAnimation(CharacterAnimation.Jump, { loop: false });
+            store.playerEngine.playAnimation(CharacterAnimation.Jump, { loop: false });
         });
 
         document.querySelector("#vp-btn-anim-sleeping").addEventListener('click', () => {

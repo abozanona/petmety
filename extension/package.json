@@ -43,6 +43,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
+        "expr-eval": "^2.0.2",
         "gsap": "^3.12.5",
         "pino": "^8.19.0"
     }

@@ -88,3 +88,10 @@
 .vp-hidden {
     display: none !important;
 }
+
+svg.vp-animation-debug {
+    path {
+        stroke-width: 2;
+        stroke: gray;
+    }
+}

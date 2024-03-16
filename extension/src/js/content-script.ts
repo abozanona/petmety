@@ -5,6 +5,8 @@ import { UtilsEngine } from './utils/utils';
 import { MenuEngine } from './menu-engine';
 import { PlayerEngine } from './player-engine';
 
+const DEBUG_MODE: boolean = true;
+
 (async () => {
     const elementSelector = `#vp-player-container`;
 
@@ -16,12 +18,15 @@ import { PlayerEngine } from './player-engine';
     const playerEngine = new PlayerEngine(elementSelector);
 
     const edgeDetector = new EdgeDetector({
-        // debugMode: true,
+        debugMode: DEBUG_MODE,
         ignoreSelector: elementSelector,
     });
     edgeDetector.injectCalculator();
 
-    const animationEngine = new AnimationEngine(elementSelector)
+    const animationEngine = new AnimationEngine({
+        debugMode: DEBUG_MODE,
+        selector: elementSelector,
+    })
     animationEngine.init();
 
     const menuEngine = new MenuEngine();
