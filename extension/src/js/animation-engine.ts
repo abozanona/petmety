@@ -2,8 +2,7 @@ import { gsap } from "gsap"
 import { Draggable } from "gsap/Draggable"
 import { MotionPathPlugin } from "gsap/MotionPathPlugin"
 import { store } from "./store";
-import { EdgeDetector, Point2d } from "./edge-detector";
-import { logger } from "./utils/logger";
+import { Point2d } from "./edge-detector";
 import { UtilsEngine } from "./utils/utils";
 import { Parser } from "expr-eval"
 
@@ -36,7 +35,7 @@ export class AnimationEngine {
 
         const edges = store
             .edgeDetector
-            .topEdges
+            .topVisibleEdges
             .filter(el => el.start.y > dragEndEvent.clientY + spriteRect.height && el.start.x <= dragEndEvent.clientX && el.end.x >= dragEndEvent.clientX); // enges below the sprite
 
         // Sort based on priority randomly, get edge with highest priority
@@ -56,13 +55,7 @@ export class AnimationEngine {
         gsap.to(this.options.selector, { ...moveTo, duration: distance / 100 });
     }
 
-    async jumpToEdge(point: Point2d) {
-        // Can't jump to a point out of view port
-        if (!EdgeDetector.isPointInViewPort(point)) {
-            logger.warn("start point out of viewport")
-            return;
-        }
-
+    async singleJumpToPoint(point: Point2d) {
         const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
         const startPoint: Point2d = { x: spriteRect.x, y: spriteRect.y + spriteRect.height }
 
@@ -117,19 +110,43 @@ export class AnimationEngine {
 
         const animationDuration = 2;
 
-        setTimeout(() => {
-            animationSvg.remove();
-        }, (animationDuration + 1) * 1000)
-
         // Move to edge
-        gsap.to(this.options.selector, {
-            duration: animationDuration,
-            ease: "power1.inOut",
-            motionPath: {
-                path: '#' + pathId,
-                align: '#' + pathId,
-                alignOrigin: [0, 1]
-            }
+        await new Promise<void>(resolve => {
+            gsap.to(this.options.selector, {
+                duration: animationDuration,
+                ease: "power1.inOut",
+                motionPath: {
+                    path: '#' + pathId,
+                    align: '#' + pathId,
+                    alignOrigin: [0, 1]
+                },
+                onComplete: () => resolve()
+            })
         });
+        animationSvg.remove();
+    }
+
+    async moveCloserToPoint(destinationPoint: Point2d) {
+        const maxJumpDistance = 200;
+        const negligtableDistance = 20;
+        // How to select next edge to jump to?
+        // 1. Should be within the max jump distance. If can't find one, then select the next closest edge to the sprite
+        // 2. Should be closer than other edges to the destination point
+        const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
+        const spriteLocation: Point2d = { x: spriteRect.x, y: spriteRect.y + spriteRect.height }
+
+        const horizontalEdges = store.edgeDetector.horizontalEdges.filter(edge => Math.abs(edge.start.y - spriteLocation.y) > negligtableDistance);
+        // Sort based on the closest to destination
+        horizontalEdges.sort(edge => destinationPoint.y - edge.start.y)
+
+        // Filter by max jump distance
+        const edgesWithinJumpDistance = horizontalEdges.filter(edge => Math.abs(spriteLocation.y - edge.start.y) <= maxJumpDistance)
+        if (edgesWithinJumpDistance.length) {
+            await this.singleJumpToPoint(edgesWithinJumpDistance[0].start)
+        } else if (horizontalEdges.length) {
+            await this.singleJumpToPoint(horizontalEdges[horizontalEdges.length - 1].start)
+        } else {
+            await this.singleJumpToPoint(destinationPoint)
+        }
     }
 }

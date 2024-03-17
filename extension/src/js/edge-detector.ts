@@ -158,37 +158,48 @@ export class EdgeDetector {
         return this._foundRects;
     }
 
-    public get horizontalRects(): Rect[] {
-        return this._foundRects.filter(edge => edge.visibility.top || edge.visibility.bottom);
+    // TODO: Define visibility filters that can be applies on getters easily. eg. `.edges.filter(EdgeDetector.Filters.FilterHorizontal)`
+
+    public get horizontalVisibleRects(): Rect[] {
+        return this._foundRects.filter(edge => edge.visibility.top.isVisible || edge.visibility.bottom.isVisible);
     }
 
-    public get verticalRects(): Rect[] {
-        return this._foundRects.filter(edge => edge.visibility.right || edge.visibility.left);
+    public get verticalVisibleRects(): Rect[] {
+        return this._foundRects.filter(edge => edge.visibility.right.isVisible || edge.visibility.left.isVisible);
     }
 
     public get horizontalEdges(): Edge[] {
-        return this._foundRects.filter(edge => edge.visibility.top || edge.visibility.bottom).flatMap(edge =>
+        return this._foundRects.flatMap(edge =>
             [].concat(
-                edge.visibility.top ? edge.translate.topEdge : [],
-                edge.visibility.bottom ? edge.translate.bottomEdge : []
+                edge.translate.topEdge,
+                edge.translate.bottomEdge
             )
         );
     }
 
-    public get topEdges(): Edge[] {
-        return this._foundRects.filter(edge => edge.visibility.top).flatMap(edge =>
+    public get horizontalVisibleEdges(): Edge[] {
+        return this._foundRects.filter(edge => edge.visibility.top.isVisible || edge.visibility.bottom.isVisible).flatMap(edge =>
             [].concat(
-                edge.visibility.top ? edge.translate.topEdge : [],
-                edge.visibility.bottom ? edge.translate.bottomEdge : []
+                edge.visibility.top.isVisible ? edge.translate.topEdge : [],
+                edge.visibility.bottom.isVisible ? edge.translate.bottomEdge : []
             )
         );
     }
 
-    public get verticalEdges(): Edge[] {
-        return this._foundRects.filter(edge => edge.visibility.right || edge.visibility.left).flatMap(edge =>
+    public get topVisibleEdges(): Edge[] {
+        return this._foundRects.filter(edge => edge.visibility.top.isVisible).flatMap(edge =>
             [].concat(
-                edge.visibility.right ? edge.translate.rightEdge : [],
-                edge.visibility.left ? edge.translate.leftEdge : []
+                edge.visibility.top.isVisible ? edge.translate.topEdge : [],
+                edge.visibility.bottom.isVisible ? edge.translate.bottomEdge : []
+            )
+        );
+    }
+
+    public get verticalVisibleEdges(): Edge[] {
+        return this._foundRects.filter(edge => edge.visibility.right.isVisible || edge.visibility.left.isVisible).flatMap(edge =>
+            [].concat(
+                edge.visibility.right.isVisible ? edge.translate.rightEdge : [],
+                edge.visibility.left.isVisible ? edge.translate.leftEdge : []
             )
         );
     }
@@ -310,9 +321,6 @@ export class EdgeDetector {
         }
         // Ignore nodes outside viewport
         const edgesVisibility = this.getRectEdgesInViewPort(nodeRect);
-        if (!edgesVisibility.top.isVisible && !edgesVisibility.bottom.isVisible && !edgesVisibility.right.isVisible && !edgesVisibility.left.isVisible) {
-            addNode = false;
-        }
         if (!edgesVisibility.top.isVisible) {
             node.classList.remove("vp-edge-detector-top-text");
             node.classList.remove("vp-edge-detector-top-full");

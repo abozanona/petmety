@@ -3,7 +3,8 @@ import { CharacterAnimation } from "./player-engine";
 import { store } from "./store";
 
 export class MenuEngine {
-    init() {
+
+    constructor() {
         // Toggle menu button
         document.querySelector("#vp-sprite-menu-toggle").addEventListener('click', () => {
             document.querySelector('.vp-sprite-menu-list').classList.remove('vp-hidden');
@@ -11,9 +12,9 @@ export class MenuEngine {
         });
 
         document.querySelector("#vp-btn-jump-to-another-place").addEventListener('click', () => {
-            const edges = store.edgeDetector.topEdges.filter(edge => edge.rectType !== RectType.WINDOW);
+            const edges = store.edgeDetector.topVisibleEdges.filter(edge => edge.rectType !== RectType.WINDOW);
             const edge = edges[Math.floor(Math.random() * edges.length)];
-            store.animationEngine.jumpToEdge(Math.random() < 0.5 ? edge.start : edge.end);
+            store.animationEngine.singleJumpToPoint(Math.random() < 0.5 ? edge.start : edge.end);
         });
 
         document.querySelector("#vp-btn-anim-idle").addEventListener('click', () => {

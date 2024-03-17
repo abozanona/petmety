@@ -4,8 +4,9 @@ import { store } from './store'
 import { UtilsEngine } from './utils/utils';
 import { MenuEngine } from './menu-engine';
 import { PlayerEngine } from './player-engine';
+import { SpriteEngine } from './sprite-engine';
 
-const DEBUG_MODE: boolean = true;
+const DEBUG_MODE: boolean = false;
 
 (async () => {
     const elementSelector = `#vp-player-container`;
@@ -30,9 +31,13 @@ const DEBUG_MODE: boolean = true;
     animationEngine.init();
 
     const menuEngine = new MenuEngine();
-    menuEngine.init();
+
+    const spriteEngine = new SpriteEngine({
+        selector: elementSelector
+    });
 
     store.playerEngine = playerEngine;
     store.edgeDetector = edgeDetector;
     store.animationEngine = animationEngine;
+    store.spriteEngine = spriteEngine;
 })()
