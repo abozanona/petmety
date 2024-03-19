@@ -4,14 +4,13 @@ import { PlayerEngine } from "./player-engine";
 import { SpriteEngine } from "./sprite-engine";
 
 class Store {
-    public edgeDetector: EdgeDetector;
+	public edgeDetector: EdgeDetector;
 
-    public animationEngine: AnimationEngine;
+	public animationEngine: AnimationEngine;
 
-    public playerEngine: PlayerEngine;
+	public playerEngine: PlayerEngine;
 
-    public spriteEngine: SpriteEngine;
-
-};
+	public spriteEngine: SpriteEngine;
+}
 
 export const store = new Store();

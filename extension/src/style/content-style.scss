@@ -1,97 +1,97 @@
 #vp-player-container {
-    width: 250px;
-    height: 110px;
-    position: absolute;
-    bottom: 0px;
-    z-index: 999999999;
+	width: 250px;
+	height: 110px;
+	position: absolute;
+	bottom: 0px;
+	z-index: 999999999;
 }
 
 .vp-debug-mode {
-    .vp-edge-detector-top-text {
-        border-top: solid 1px #00FF00 !important;
-    }
+	.vp-edge-detector-top-text {
+		border-top: solid 1px #00ff00 !important;
+	}
 
-    .vp-edge-detector-bottom-text {
-        border-bottom: solid 1px #00FF00 !important;
-    }
+	.vp-edge-detector-bottom-text {
+		border-bottom: solid 1px #00ff00 !important;
+	}
 
-    .vp-edge-detector-right-text {
-        border-right: solid 1px #00FF00 !important;
-    }
+	.vp-edge-detector-right-text {
+		border-right: solid 1px #00ff00 !important;
+	}
 
-    .vp-edge-detector-left-text {
-        border-left: solid 1px #00FF00 !important;
-    }
+	.vp-edge-detector-left-text {
+		border-left: solid 1px #00ff00 !important;
+	}
 
-    .vp-edge-detector-top-full {
-        border-top: solid 1px #FF0000 !important;
-    }
+	.vp-edge-detector-top-full {
+		border-top: solid 1px #ff0000 !important;
+	}
 
-    .vp-edge-detector-bottom-full {
-        border-bottom: solid 1px #FF0000 !important;
-    }
+	.vp-edge-detector-bottom-full {
+		border-bottom: solid 1px #ff0000 !important;
+	}
 
-    .vp-edge-detector-right-full {
-        border-right: solid 1px #FF0000 !important;
-    }
+	.vp-edge-detector-right-full {
+		border-right: solid 1px #ff0000 !important;
+	}
 
-    .vp-edge-detector-left-full {
-        border-left: solid 1px #FF0000 !important;
-    }
+	.vp-edge-detector-left-full {
+		border-left: solid 1px #ff0000 !important;
+	}
 
-    .vp-edge-detector-top-partial {
-        border-top: dashed 1px #0000FF !important;
-    }
+	.vp-edge-detector-top-partial {
+		border-top: dashed 1px #0000ff !important;
+	}
 
-    .vp-edge-detector-bottom-partial {
-        border-bottom: dashed 1px #0000FF !important;
-    }
+	.vp-edge-detector-bottom-partial {
+		border-bottom: dashed 1px #0000ff !important;
+	}
 
-    .vp-edge-detector-right-partial {
-        border-right: dashed 1px #0000FF !important;
-    }
+	.vp-edge-detector-right-partial {
+		border-right: dashed 1px #0000ff !important;
+	}
 
-    .vp-edge-detector-left-partial {
-        border-left: dashed 1px #0000FF !important;
-    }
+	.vp-edge-detector-left-partial {
+		border-left: dashed 1px #0000ff !important;
+	}
 }
 
 .vp-sprite-menu-container {
-    position: relative;
-    cursor: default;
+	position: relative;
+	cursor: default;
 
-    .vp-sprite-menu {
-        position: absolute;
-        left: 50%;
-        transform: translate(-50%, -100%);
-        cursor: unset;
+	.vp-sprite-menu {
+		position: absolute;
+		left: 50%;
+		transform: translate(-50%, -100%);
+		cursor: unset;
 
-        .vp-sprite-menu-list {
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%, -100%);
-            display: flex;
-            flex-direction: row;
+		.vp-sprite-menu-list {
+			position: absolute;
+			left: 50%;
+			transform: translate(-50%, -100%);
+			display: flex;
+			flex-direction: row;
 
-            .vp-sprite-menu-list-item {
-                width: 50px;
-                height: 50px;
-                margin: 5px;
-                background-color: #ccc;
-                border: solid;
-                cursor: pointer;
-            }
-        }
-    }
+			.vp-sprite-menu-list-item {
+				width: 50px;
+				height: 50px;
+				margin: 5px;
+				background-color: #ccc;
+				border: solid;
+				cursor: pointer;
+			}
+		}
+	}
 }
 
 .vp-hidden {
-    display: none !important;
+	display: none !important;
 }
 
 svg.vp-animation-debug {
-    path {
-        stroke-width: 2;
-        stroke: gray;
-    }
+	path {
+		stroke-width: 2;
+		stroke: gray;
+	}
 }
