@@ -5,6 +5,11 @@ type SpriteEngineOptions = {
 	selector?: string;
 };
 
+export enum SpriteDirection {
+	LEFT,
+	RIGHT,
+}
+
 export class SpriteEngine {
 	private defaultOptions: SpriteEngineOptions = {
 		selector: "#vp-player-container",
@@ -12,6 +17,23 @@ export class SpriteEngine {
 	private options: SpriteEngineOptions;
 
 	private isJumbingToViewport: boolean;
+
+	private _direction: SpriteDirection = SpriteDirection.LEFT;
+	public get direction(): SpriteDirection {
+		return this._direction;
+	}
+	public set direction(newValue: SpriteDirection) {
+		if (newValue !== this._direction) {
+			if (newValue === SpriteDirection.LEFT) {
+				document.querySelector(this.options.selector).classList.add("vp-direction-left");
+				document.querySelector(this.options.selector).classList.remove("vp-direction-right");
+			} else {
+				document.querySelector(this.options.selector).classList.remove("vp-direction-left");
+				document.querySelector(this.options.selector).classList.add("vp-direction-right");
+			}
+		}
+		this._direction = newValue;
+	}
 
 	constructor(opt: SpriteEngineOptions) {
 		this.options = { ...this.defaultOptions, ...opt };
@@ -23,12 +45,8 @@ export class SpriteEngine {
 		if (this.isJumbingToViewport) {
 			return;
 		}
-		const spriteRect = document
-			.querySelector(this.options.selector)
-			.getBoundingClientRect();
-		if (
-			EdgeDetector.isPointInViewPort({ x: spriteRect.x, y: spriteRect.y })
-		) {
+		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
+		if (EdgeDetector.isPointInViewPort({ x: spriteRect.x, y: spriteRect.y })) {
 			return;
 		}
 		// If sprite goes out of range, jump to view port again
@@ -47,8 +65,7 @@ export class SpriteEngine {
 
 	getVisiblePoint(): Point2d {
 		const visibleEdges = store.edgeDetector.horizontalVisibleEdges;
-		const edge =
-			visibleEdges[Math.floor(Math.random() * visibleEdges.length)];
+		const edge = visibleEdges[Math.floor(Math.random() * visibleEdges.length)];
 		return edge.start;
 	}
 }

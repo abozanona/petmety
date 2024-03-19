@@ -5,6 +5,7 @@ import { store } from "./store";
 import { Point2d } from "./edge-detector";
 import { UtilsEngine } from "./utils/utils";
 import { Parser } from "expr-eval";
+import { SpriteDirection } from "./sprite-engine";
 
 type AnimationEngineOptions = {
 	selector?: string;
@@ -31,23 +32,15 @@ export class AnimationEngine {
 	}
 
 	dropToEdgeAfterDragEnds(dragEndEvent: any) {
-		const spriteRect = document
-			.querySelector(this.options.selector)
-			.getBoundingClientRect();
+		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
 
 		const edges = store.edgeDetector.topVisibleEdges.filter(
-			(el) =>
-				el.start.y > dragEndEvent.clientY + spriteRect.height &&
-				el.start.x <= dragEndEvent.clientX &&
-				el.end.x >= dragEndEvent.clientX
+			(el) => el.start.y > dragEndEvent.clientY + spriteRect.height && el.start.x <= dragEndEvent.clientX && el.end.x >= dragEndEvent.clientX
 		); // enges below the sprite
 
 		// Sort based on priority randomly, get edge with highest priority
 		edges.sort((a, b) => {
-			return (
-				Math.random() * 10 * b.rectType * b.rectType -
-				Math.random() * 10 * a.rectType * a.rectType
-			);
+			return Math.random() * 10 * b.rectType * b.rectType - Math.random() * 10 * a.rectType * a.rectType;
 		});
 		const edge = edges[0];
 
@@ -58,36 +51,27 @@ export class AnimationEngine {
 			y: 0,
 		};
 		// drop down with a constant speed
-		const distance: number = Math.sqrt(
-			Math.pow(dragEndEvent.clientY - moveTo.y, 2)
-		);
+		const distance: number = Math.sqrt(Math.pow(dragEndEvent.clientY - moveTo.y, 2));
 		gsap.to(this.options.selector, { ...moveTo, duration: distance / 100 });
 	}
 
 	async singleJumpToPoint(point: Point2d) {
-		const spriteRect = document
-			.querySelector(this.options.selector)
-			.getBoundingClientRect();
+		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
 		const startPoint: Point2d = {
 			x: spriteRect.x,
 			y: spriteRect.y + spriteRect.height,
 		};
 
-		let animationsTemplates = await UtilsEngine.loadTemplate(
-			"/templates/animations.template.html"
-		);
-		animationsTemplates = animationsTemplates.replace(
-			/{(.+?)}/g,
-			(match) => {
-				match = match.replace("{", "").replace("}", "");
-				const parser = new Parser();
-				const expr = parser.parse(match);
-				return expr.evaluate({
-					WIDTH: Math.abs(point.x - startPoint.x),
-					HEIGHT: Math.abs(point.y - startPoint.y),
-				});
-			}
-		);
+		let animationsTemplates = await UtilsEngine.loadTemplate("/templates/animations.template.html");
+		animationsTemplates = animationsTemplates.replace(/{(.+?)}/g, (match) => {
+			match = match.replace("{", "").replace("}", "");
+			const parser = new Parser();
+			const expr = parser.parse(match);
+			return expr.evaluate({
+				WIDTH: Math.abs(point.x - startPoint.x),
+				HEIGHT: Math.abs(point.y - startPoint.y),
+			});
+		});
 		const elem = document.createElement("div");
 		elem.innerHTML = animationsTemplates;
 
@@ -96,18 +80,20 @@ export class AnimationEngine {
 		// Detect correct jump animation
 		let animation = "jumpNorthWest";
 		if (point.x <= startPoint.x && point.y <= startPoint.y) {
+			store.spriteEngine.direction = SpriteDirection.LEFT;
 			animation = "jumpNorthWest";
 		} else if (point.x >= startPoint.x && point.y <= startPoint.y) {
+			store.spriteEngine.direction = SpriteDirection.RIGHT;
 			animation = "jumpNorthEast";
 		} else if (point.x <= startPoint.x && point.y >= startPoint.y) {
+			store.spriteEngine.direction = SpriteDirection.LEFT;
 			animation = "jumpSouthWest";
 		} else if (point.x >= startPoint.x && point.y >= startPoint.y) {
+			store.spriteEngine.direction = SpriteDirection.RIGHT;
 			animation = "jumpSouthEast";
 		}
 
-		const animationSvg: HTMLElement = elem.querySelector(
-			".vp-" + animation
-		);
+		const animationSvg: HTMLElement = elem.querySelector(".vp-" + animation);
 		const pathId = "path-" + crypto.randomUUID();
 		animationSvg.querySelector("path").id = pathId;
 		if (this.options.debugMode) {
@@ -117,10 +103,8 @@ export class AnimationEngine {
 		animationSvg.style.position = "absolute";
 		animationSvg.style.width = Math.abs(point.x - startPoint.x) + "px";
 		animationSvg.style.height = Math.abs(point.y - startPoint.y) + "px";
-		animationSvg.style.left =
-			window.scrollX + Math.min(point.x, startPoint.x) + "px";
-		animationSvg.style.top =
-			window.scrollY + Math.min(point.y, startPoint.y) + "px";
+		animationSvg.style.left = window.scrollX + Math.min(point.x, startPoint.x) + "px";
+		animationSvg.style.top = window.scrollY + Math.min(point.y, startPoint.y) + "px";
 		if (this.options.debugMode) {
 			animationSvg.style.border = "solid 1px red";
 			animationSvg.style.zIndex = "999999999";
@@ -152,32 +136,22 @@ export class AnimationEngine {
 		// How to select next edge to jump to?
 		// 1. Should be within the max jump distance. If can't find one, then select the next closest edge to the sprite
 		// 2. Should be closer than other edges to the destination point
-		const spriteRect = document
-			.querySelector(this.options.selector)
-			.getBoundingClientRect();
+		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
 		const spriteLocation: Point2d = {
 			x: spriteRect.x,
 			y: spriteRect.y + spriteRect.height,
 		};
 
-		const horizontalEdges = store.edgeDetector.horizontalEdges.filter(
-			(edge) =>
-				Math.abs(edge.start.y - spriteLocation.y) > negligtableDistance
-		);
+		const horizontalEdges = store.edgeDetector.horizontalEdges.filter((edge) => Math.abs(edge.start.y - spriteLocation.y) > negligtableDistance);
 		// Sort based on the closest to destination
 		horizontalEdges.sort((edge) => destinationPoint.y - edge.start.y);
 
 		// Filter by max jump distance
-		const edgesWithinJumpDistance = horizontalEdges.filter(
-			(edge) =>
-				Math.abs(spriteLocation.y - edge.start.y) <= maxJumpDistance
-		);
+		const edgesWithinJumpDistance = horizontalEdges.filter((edge) => Math.abs(spriteLocation.y - edge.start.y) <= maxJumpDistance);
 		if (edgesWithinJumpDistance.length) {
 			await this.singleJumpToPoint(edgesWithinJumpDistance[0].start);
 		} else if (horizontalEdges.length) {
-			await this.singleJumpToPoint(
-				horizontalEdges[horizontalEdges.length - 1].start
-			);
+			await this.singleJumpToPoint(horizontalEdges[horizontalEdges.length - 1].start);
 		} else {
 			await this.singleJumpToPoint(destinationPoint);
 		}

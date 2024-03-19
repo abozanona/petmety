@@ -42,4 +42,5 @@ const DEBUG_MODE: boolean = false;
 	store.edgeDetector = edgeDetector;
 	store.animationEngine = animationEngine;
 	store.spriteEngine = spriteEngine;
+	store.menuEngine = menuEngine;
 })();

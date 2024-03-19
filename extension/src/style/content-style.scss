@@ -4,6 +4,9 @@
 	position: absolute;
 	bottom: 0px;
 	z-index: 999999999;
+	&.vp-direction-right canvas {
+		transform: scaleX(-1);
+	}
 }
 
 .vp-debug-mode {
