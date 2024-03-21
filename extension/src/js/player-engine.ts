@@ -1,3 +1,7 @@
+import * as PIXI from "pixi.js";
+import { Spine } from "pixi-spine";
+import * as pixiUnsaveEvalFnPatch from "@pixi/unsafe-eval";
+
 declare const spine: any;
 
 type IdSelector = `#${string}`;
@@ -16,37 +20,49 @@ type AnimationOptions = {
 };
 
 export class PlayerEngine {
-	private elementId: string;
-	private playerController: any;
+	private selector: IdSelector;
 	private timeoutID: NodeJS.Timeout;
+	spriteController: Spine;
 
 	constructor(selector: IdSelector) {
-		this.elementId = selector.substring(1);
+		pixiUnsaveEvalFnPatch.install(PIXI);
 
-		this.playerController = new spine.SpinePlayer(this.elementId, {
-			jsonUrl: chrome.runtime.getURL("/assets/cat.json"),
-			atlasUrl: chrome.runtime.getURL("/assets/cat.atlas"),
-			animation: CharacterAnimation.Idle,
-			showControls: false,
-			alpha: true,
+		this.selector = selector;
+
+		const app = new PIXI.Application({
+			backgroundColor: 0x000000,
+			width: 200,
+			height: 140,
+			backgroundAlpha: 0,
+		});
+		app.stage.interactive = true;
+		document.querySelector(this.selector).appendChild(app.view);
+
+		const loader = app.loader.add("sprite", chrome.runtime.getURL("/assets/cat.json"));
+
+		loader.load((loader, res) => {
+			this.spriteController = new Spine(res.sprite.spineData);
+			// spineboy
+			this.spriteController.scale.set(0.35);
+			this.spriteController.state.setAnimation(0, "Idle", true);
+			this.spriteController.x = 0;
+			this.spriteController.y = 0;
+
+			this.spriteController.position.set(80, 140);
+
+			app.stage.addChild(this.spriteController);
 		});
 	}
 
-	playAnimation(
-		characterAnimation: CharacterAnimation,
-		options: AnimationOptions
-	) {
+	playAnimation(characterAnimation: CharacterAnimation, options: AnimationOptions) {
 		if (typeof this.timeoutID === "number") {
 			clearTimeout(this.timeoutID);
 		}
 
-		this.playerController.setAnimation(characterAnimation, options.loop);
+		this.spriteController.state.setAnimation(0, characterAnimation, options.loop);
 		if (!options.loop) {
 			this.timeoutID = setTimeout(() => {
-				this.playerController.setAnimation(
-					CharacterAnimation.Idle,
-					true
-				);
+				this.spriteController.state.setAnimation(0, CharacterAnimation.Idle, true);
 			}, 3000);
 		}
 	}
