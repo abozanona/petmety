@@ -6,6 +6,8 @@ import { Point2d } from "./edge-detector";
 import { UtilsEngine } from "./utils/utils";
 import { Parser } from "expr-eval";
 import { SpriteDirection } from "./sprite-engine";
+import { CharacterAnimation } from "./player-engine";
+import { logger } from "./utils/logger";
 
 type AnimationEngineOptions = {
 	selector?: string;
@@ -32,6 +34,7 @@ export class AnimationEngine {
 	}
 
 	dropToEdgeAfterDragEnds(dragEndEvent: any) {
+		logger.info("dropToEdgeAfterDragEnds");
 		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
 
 		const edges = store.edgeDetector.topVisibleEdges.filter(
@@ -52,10 +55,11 @@ export class AnimationEngine {
 		};
 		// drop down with a constant speed
 		const distance: number = Math.sqrt(Math.pow(dragEndEvent.clientY - moveTo.y, 2));
-		gsap.to(this.options.selector, { ...moveTo, duration: distance / 100 });
+		gsap.to(this.options.selector, { ...moveTo, duration: distance / 30 });
 	}
 
-	async singleJumpToPoint(point: Point2d) {
+	async singleJumpToPoint(destinationPoint: Point2d) {
+		logger.info("singleJumpToPoint");
 		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
 		const startPoint: Point2d = {
 			x: spriteRect.x,
@@ -68,8 +72,8 @@ export class AnimationEngine {
 			const parser = new Parser();
 			const expr = parser.parse(match);
 			return expr.evaluate({
-				WIDTH: Math.abs(point.x - startPoint.x),
-				HEIGHT: Math.abs(point.y - startPoint.y),
+				WIDTH: Math.abs(destinationPoint.x - startPoint.x),
+				HEIGHT: Math.abs(destinationPoint.y - startPoint.y),
 			});
 		});
 		const elem = document.createElement("div");
@@ -79,16 +83,16 @@ export class AnimationEngine {
 
 		// Detect correct jump animation
 		let animation = "jumpNorthWest";
-		if (point.x <= startPoint.x && point.y <= startPoint.y) {
+		if (destinationPoint.x <= startPoint.x && destinationPoint.y <= startPoint.y) {
 			store.spriteEngine.direction = SpriteDirection.LEFT;
 			animation = "jumpNorthWest";
-		} else if (point.x >= startPoint.x && point.y <= startPoint.y) {
+		} else if (destinationPoint.x >= startPoint.x && destinationPoint.y <= startPoint.y) {
 			store.spriteEngine.direction = SpriteDirection.RIGHT;
 			animation = "jumpNorthEast";
-		} else if (point.x <= startPoint.x && point.y >= startPoint.y) {
+		} else if (destinationPoint.x <= startPoint.x && destinationPoint.y >= startPoint.y) {
 			store.spriteEngine.direction = SpriteDirection.LEFT;
 			animation = "jumpSouthWest";
-		} else if (point.x >= startPoint.x && point.y >= startPoint.y) {
+		} else if (destinationPoint.x >= startPoint.x && destinationPoint.y >= startPoint.y) {
 			store.spriteEngine.direction = SpriteDirection.RIGHT;
 			animation = "jumpSouthEast";
 		}
@@ -101,10 +105,10 @@ export class AnimationEngine {
 		}
 		document.body.appendChild(animationSvg);
 		animationSvg.style.position = "absolute";
-		animationSvg.style.width = Math.abs(point.x - startPoint.x) + "px";
-		animationSvg.style.height = Math.abs(point.y - startPoint.y) + "px";
-		animationSvg.style.left = window.scrollX + Math.min(point.x, startPoint.x) + "px";
-		animationSvg.style.top = window.scrollY + Math.min(point.y, startPoint.y) + "px";
+		animationSvg.style.width = Math.abs(destinationPoint.x - startPoint.x) + "px";
+		animationSvg.style.height = Math.abs(destinationPoint.y - startPoint.y) + "px";
+		animationSvg.style.left = window.scrollX + Math.min(destinationPoint.x, startPoint.x) + "px";
+		animationSvg.style.top = window.scrollY + Math.min(destinationPoint.y, startPoint.y) + "px";
 		if (this.options.debugMode) {
 			animationSvg.style.border = "solid 1px red";
 			animationSvg.style.zIndex = "999999999";
@@ -131,6 +135,7 @@ export class AnimationEngine {
 	}
 
 	async moveCloserToPoint(destinationPoint: Point2d) {
+		logger.info("moveCloserToPoint");
 		const maxJumpDistance = 200;
 		const negligtableDistance = 20;
 		// How to select next edge to jump to?
@@ -155,5 +160,37 @@ export class AnimationEngine {
 		} else {
 			await this.singleJumpToPoint(destinationPoint);
 		}
+	}
+
+	async walkToPoint(destinationPoint: Point2d) {
+		logger.info("walkToPoint");
+		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
+		const spriteLocation: Point2d = {
+			x: spriteRect.x,
+			y: spriteRect.y + spriteRect.height,
+		};
+
+		// walk with a constant speed
+		const distance: number = Math.sqrt(Math.pow(spriteLocation.x - destinationPoint.x, 2) + Math.pow(spriteLocation.y - destinationPoint.y, 2));
+		store.playerEngine.playAnimation(CharacterAnimation.Walk, { loop: true });
+		if (destinationPoint.x < spriteLocation.x) {
+			store.spriteEngine.direction = SpriteDirection.LEFT;
+		} else {
+			store.spriteEngine.direction = SpriteDirection.RIGHT;
+		}
+		const moveTo = {
+			left: destinationPoint.x + spriteRect.x - (store.spriteEngine.direction = SpriteDirection.RIGHT ? spriteRect.width : 0), // destinationPointX + spriteX - spriteWidth
+			top: destinationPoint.y + window.scrollY - spriteRect.height, //  destinationPointY + scrollY - spriteHeight
+			x: 0,
+			y: 0,
+		};
+		await new Promise<void>((resolve) => {
+			gsap.to(this.options.selector, {
+				...moveTo,
+				duration: distance / 100,
+				onComplete: () => resolve(),
+			});
+		});
+		store.playerEngine.playAnimation(CharacterAnimation.Idle, { loop: true });
 	}
 }
