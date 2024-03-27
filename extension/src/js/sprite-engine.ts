@@ -10,6 +10,15 @@ export enum SpriteDirection {
 	RIGHT,
 }
 
+type SpriteStatus = {
+	isSleeping: boolean;
+	playerLevel: number;
+	playerLevelProgress: number;
+	happinessLevel: number;
+	satedLevel: number;
+	energyLevel: number;
+};
+
 export class SpriteEngine {
 	private defaultOptions: SpriteEngineOptions = {
 		selector: "#vp-player-container",
@@ -17,6 +26,15 @@ export class SpriteEngine {
 	private options: SpriteEngineOptions;
 
 	private isJumbingToViewport: boolean;
+
+	public spriteStatus: SpriteStatus = {
+		isSleeping: false,
+		playerLevel: 5,
+		playerLevelProgress: 13,
+		happinessLevel: 15,
+		satedLevel: 27,
+		energyLevel: 61,
+	};
 
 	private _direction: SpriteDirection = SpriteDirection.LEFT;
 	public get direction(): SpriteDirection {
