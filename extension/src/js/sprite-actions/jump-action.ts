@@ -15,7 +15,7 @@ export class JumpAction extends SpriteAction {
 		});
 	}
 	public async cancel() {
-		this.isCanceled = true;
+		super.cancel();
 	}
 
 	constructor() {

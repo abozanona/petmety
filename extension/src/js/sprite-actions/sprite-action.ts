@@ -12,6 +12,15 @@ export abstract class SpriteAction {
 	public isCanceled: boolean;
 	public abstract selectionPrecondition(): boolean;
 	public abstract start(): Promise<void>;
-	public abstract cancel(): Promise<void>;
-	public finishedCallBack(action: SpriteAction) {}
+	// TODO: Force linting error if children are not calling super
+	public async cancel(): Promise<void> {
+		this.isCanceled = true;
+		if (this.cancelCallbackFn) {
+			this.cancelCallbackFn();
+		}
+	}
+	cancelCallbackFn: () => void;
+	public cancelCallback(cancelCallbackFn: () => void) {
+		this.cancelCallbackFn = cancelCallbackFn;
+	}
 }

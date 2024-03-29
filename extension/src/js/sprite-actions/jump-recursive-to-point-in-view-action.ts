@@ -22,7 +22,7 @@ export class jumpRecursiveToPointInViewAction extends SpriteAction {
 		await this.cancel();
 	}
 	public async cancel() {
-		this.isCanceled = true;
+		super.cancel();
 	}
 
 	constructor() {

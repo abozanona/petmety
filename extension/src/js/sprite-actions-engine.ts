@@ -28,7 +28,7 @@ export class SpriteActionsEngine {
 	calcelationTimeout: NodeJS.Timeout;
 
 	get isActionRunning(): boolean {
-		return !!this.calcelationTimeout && !this.currentAction?.isCanceled;
+		return !!this.calcelationTimeout;
 	}
 
 	constructor() {
@@ -47,17 +47,13 @@ export class SpriteActionsEngine {
 		if (this.pq.size() >= this.MAX_QUEUED_ACTIONS) {
 			return;
 		}
-		let actionsList: SpriteAction[] = [];
 		// TODO: should add more randomness
 		const nextAction: SpriteAction = allActions
 			.filter((action) => action.selectionPrecondition())
 			// Sort based on priority
 			.sort((a1, a2) => {
 				// Don't add already existing actions
-				if (actionsList.find((action) => a1.constructor === action.constructor)) {
-					return -1;
-				}
-				if (actionsList.find((action) => a2.constructor === action.constructor)) {
+				if (this.actionsArray.find((action) => a1.constructor === action.constructor)) {
 					return 1;
 				}
 				// Sort based on priority
@@ -102,13 +98,16 @@ export class SpriteActionsEngine {
 		const calcelationTimeoutCallback = async () => {
 			clearTimeout(this.calcelationTimeout);
 			this.calcelationTimeout = undefined;
-			await this.currentAction.cancel();
+			if (!this.currentAction.isCanceled) {
+				await this.currentAction.cancel();
+			}
 			// Reset action cancel status ofr future runs
 			this.currentAction.isCanceled = false;
 			this.tick();
 		};
 		this.calcelationTimeout = setTimeout(calcelationTimeoutCallback.bind(this), this.currentAction.maxExecutionTime * 1000);
 
+		this.currentAction.cancelCallback(calcelationTimeoutCallback.bind(this));
 		await this.currentAction.start();
 		logger.info("Executing action", this.currentAction);
 	}
