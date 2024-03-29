@@ -55,6 +55,10 @@ export class PlayerEngine {
 	}
 
 	playAnimation(characterAnimation: CharacterAnimation, options: AnimationOptions) {
+		// Wait until spine is rendered
+		if (!this.spriteController) {
+			return;
+		}
 		if (typeof this.timeoutID === "number") {
 			clearTimeout(this.timeoutID);
 		}

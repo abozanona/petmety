@@ -17,32 +17,23 @@ const DEBUG_MODE: boolean = false;
 	elem.innerHTML = spriteTemplateHTML;
 	document.body.appendChild(elem.childNodes[0]);
 
-	const playerEngine = new PlayerEngine(elementSelector);
-
-	const spriteActionsEngine = new SpriteActionsEngine();
-
-	const edgeDetector = new EdgeDetector({
+	store.edgeDetector = new EdgeDetector({
 		debugMode: DEBUG_MODE,
 		ignoreSelector: elementSelector,
 	});
-	edgeDetector.injectCalculator();
 
-	const animationEngine = new AnimationEngine({
+	store.spriteActionsEngine = new SpriteActionsEngine();
+
+	store.playerEngine = new PlayerEngine(elementSelector);
+
+	store.animationEngine = new AnimationEngine({
 		debugMode: DEBUG_MODE,
 		selector: elementSelector,
 	});
-	animationEngine.init();
 
-	const menuEngine = new MenuEngine();
+	store.menuEngine = new MenuEngine();
 
-	const spriteEngine = new SpriteEngine({
+	store.spriteEngine = new SpriteEngine({
 		selector: elementSelector,
 	});
-
-	store.playerEngine = playerEngine;
-	store.edgeDetector = edgeDetector;
-	store.animationEngine = animationEngine;
-	store.spriteEngine = spriteEngine;
-	store.menuEngine = menuEngine;
-	store.spriteActionsEngine = spriteActionsEngine;
 })();

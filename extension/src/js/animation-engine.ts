@@ -22,8 +22,9 @@ export class AnimationEngine {
 	private options: AnimationEngineOptions;
 	constructor(opt: AnimationEngineOptions) {
 		this.options = { ...this.defaultOptions, ...opt };
+		this.init();
 	}
-	init() {
+	private init() {
 		gsap.registerPlugin(Draggable, MotionPathPlugin);
 
 		Draggable.create(this.options.selector, {

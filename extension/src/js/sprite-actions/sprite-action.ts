@@ -2,6 +2,7 @@ export enum ActionPriority {
 	MAX_ACTION_PRIORITY = Infinity,
 	ACTION_IDLE = 100,
 	ACTION_JUMP = 101,
+	ACTION_JUMP_RECURSIVE_TO_POINT_IN_VIEW = 500,
 }
 
 export abstract class SpriteAction {

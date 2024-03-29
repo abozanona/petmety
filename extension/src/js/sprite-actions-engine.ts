@@ -3,6 +3,7 @@ import { ICompare, PriorityQueue } from "@datastructures-js/priority-queue";
 import { IdleAction } from "./sprite-actions/idle-action";
 import { JumpAction } from "./sprite-actions/jump-action";
 import { logger } from "./utils/logger";
+import { jumpRecursiveToPointInViewAction } from "./sprite-actions/jump-recursive-to-point-in-view-action";
 
 const allActions: SpriteAction[] = [];
 
@@ -10,6 +11,7 @@ const allActions: SpriteAction[] = [];
 const fillAvailableActions = () => {
 	allActions.push(new IdleAction());
 	allActions.push(new JumpAction());
+	allActions.push(new jumpRecursiveToPointInViewAction());
 };
 
 export class SpriteActionsEngine {
@@ -19,14 +21,14 @@ export class SpriteActionsEngine {
 
 	pq: PriorityQueue<SpriteAction> = PriorityQueue.fromArray<SpriteAction>(this.actionsArray, this.compareActions);
 
-	MAX_QUEUED_ACTIONS: number = 10;
+	MAX_QUEUED_ACTIONS: number = 5;
 
 	currentAction: SpriteAction;
 
 	calcelationTimeout: NodeJS.Timeout;
 
 	get isActionRunning(): boolean {
-		return !!this.calcelationTimeout;
+		return !!this.calcelationTimeout && !this.currentAction?.isCanceled;
 	}
 
 	constructor() {
@@ -59,7 +61,7 @@ export class SpriteActionsEngine {
 					return 1;
 				}
 				// Sort based on priority
-				return a1.priority - a2.priority;
+				return a2.priority - a1.priority;
 			})
 			// Get all actions with same priority
 			.reduce((res: SpriteAction[], action: SpriteAction) => {
@@ -97,16 +99,17 @@ export class SpriteActionsEngine {
 			return;
 		}
 		this.currentAction = action;
-		await this.currentAction.start();
-
 		const calcelationTimeoutCallback = async () => {
 			clearTimeout(this.calcelationTimeout);
 			this.calcelationTimeout = undefined;
 			await this.currentAction.cancel();
+			// Reset action cancel status ofr future runs
+			this.currentAction.isCanceled = false;
 			this.tick();
 		};
-		logger.info("Executing action", this.currentAction);
-
 		this.calcelationTimeout = setTimeout(calcelationTimeoutCallback.bind(this), this.currentAction.maxExecutionTime * 1000);
+
+		await this.currentAction.start();
+		logger.info("Executing action", this.currentAction);
 	}
 }
