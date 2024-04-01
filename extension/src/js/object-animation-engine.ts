@@ -3,7 +3,6 @@ import { Draggable } from "gsap/Draggable";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { store } from "./store";
 import { WithOptional, WithRequired } from "./utils/utils";
-import { Constants } from "./utils/constants";
 import { Point2d, RectType } from "./edge-detector";
 
 type ObjectAnimationEngineOptions = {

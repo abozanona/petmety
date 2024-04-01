@@ -1,6 +1,6 @@
 import { ICompare, PriorityQueue } from "@datastructures-js/priority-queue";
 import { logger } from "./utils/logger";
-import { IdleAction, JumpAction, SleepAction, SpriteAction, jumpRecursiveToPointInViewAction as JumpRecursiveToPointInViewAction, WalkOnEdgeAction } from "./sprite-actions";
+import { IdleAction, JumpAction, SleepAction, SpriteAction, jumpRecursiveToPointInViewAction as JumpRecursiveToPointInViewAction, WalkOnEdgeAction, JumpToEdgeAction } from "./sprite-actions";
 import { throttle } from "throttle-debounce";
 
 const allActions: SpriteAction[] = [];
@@ -12,6 +12,7 @@ const fillAvailableActions = () => {
 	allActions.push(new JumpRecursiveToPointInViewAction());
 	allActions.push(new SleepAction());
 	allActions.push(new WalkOnEdgeAction());
+	allActions.push(new JumpToEdgeAction());
 };
 
 export class SpriteActionsEngine {

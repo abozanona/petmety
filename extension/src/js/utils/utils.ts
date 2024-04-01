@@ -22,6 +22,10 @@ export class UtilsEngine {
 	})();
 
 	public static wait = (millis: number) => new Promise((resolve) => setTimeout(resolve, millis));
+
+	public static numberBetweenTwoNumbers(min: number, max: number) {
+		return Math.floor(Math.random() * (max - min + 1) + min);
+	}
 }
 
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };

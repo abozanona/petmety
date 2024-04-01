@@ -1,6 +1,7 @@
 import { Point2d } from "../edge-detector";
 import { store } from "../store";
 import { ActionPriority, SpriteAction } from "./sprite-action";
+import { UtilsEngine } from "../utils/utils";
 
 export class WalkOnEdgeAction extends SpriteAction {
 	public priority: ActionPriority = ActionPriority.ACTION_WALK_ON_EDGE;
@@ -22,7 +23,7 @@ export class WalkOnEdgeAction extends SpriteAction {
 			x = minX;
 		} else {
 			// get point between minX & maxX
-			x = Math.floor(Math.random() * (maxX - minX + 1) + minX);
+			x = UtilsEngine.numberBetweenTwoNumbers(minX, maxX);
 		}
 		const destinationPoint: Point2d = {
 			x: x,
