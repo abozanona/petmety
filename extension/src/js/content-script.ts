@@ -1,4 +1,4 @@
-import { AnimationEngine } from "./animation-engine";
+import { SpriteAnimationEngine } from "./sprite-animation-engine";
 import { EdgeDetector } from "./edge-detector";
 import { MenuEngine } from "./menu-engine";
 import { PlayerEngine } from "./player-engine";
@@ -22,7 +22,7 @@ import { UtilsEngine } from "./utils/utils";
 
 	store.playerEngine = new PlayerEngine();
 
-	store.animationEngine = new AnimationEngine({});
+	store.animationEngine = new SpriteAnimationEngine({});
 
 	store.menuEngine = new MenuEngine();
 

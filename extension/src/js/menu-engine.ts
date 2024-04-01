@@ -1,6 +1,8 @@
 import { RectType } from "./edge-detector";
+import { ObjectInstantiatorEngine, ObjectInstantiatorType } from "./objects-instantiator-engine";
 import { CharacterAnimation } from "./player-engine";
 import { store } from "./store";
+import { UtilsEngine } from "./utils/utils";
 
 export class MenuEngine {
 	constructor() {
@@ -10,27 +12,9 @@ export class MenuEngine {
 			document.querySelector("#vp-sprite-menu-toggle")!.classList.add("vp-hidden");
 		});
 
-		document.querySelector("#vp-btn-jump-to-another-place")!.addEventListener("click", () => {
-			const edges = store.edgeDetector.topVisibleEdges.filter((edge) => edge.rectType !== RectType.WINDOW);
-			const edge = edges[Math.floor(Math.random() * edges.length)];
-			store.animationEngine.singleJumpToPoint(Math.random() < 0.5 ? edge.start : edge.end);
-		});
-
-		document.querySelector("#vp-btn-anim-idle")!.addEventListener("click", () => {
-			store.playerEngine.playAnimation(CharacterAnimation.Idle, {
-				loop: true,
-			});
-		});
-
 		document.querySelector("#vp-btn-anim-eating")!.addEventListener("click", () => {
 			store.playerEngine.playAnimation(CharacterAnimation.Eating, {
 				loop: true,
-			});
-		});
-
-		document.querySelector("#vp-btn-anim-jump")!.addEventListener("click", () => {
-			store.playerEngine.playAnimation(CharacterAnimation.Jump, {
-				loop: false,
 			});
 		});
 
@@ -38,10 +22,14 @@ export class MenuEngine {
 			store.spriteEngine.spriteStatus.isSleeping = !store.spriteEngine.spriteStatus.isSleeping;
 		});
 
-		document.querySelector("#vp-btn-anim-walk-to-point")!.addEventListener("click", () => {
-			const edges = store.edgeDetector.topVisibleEdges.filter((edge) => edge.rectType !== RectType.WINDOW);
-			const edge = edges[Math.floor(Math.random() * edges.length)];
-			store.animationEngine.walkToPoint(Math.random() < 0.5 ? edge.start : edge.end);
+		document.querySelector("#vp-btn-create-food")!.addEventListener("click", () => {
+			ObjectInstantiatorEngine.initiateObject({
+				type: ObjectInstantiatorType.FOOD,
+				imagePath: UtilsEngine.browser.runtime.getURL("/images/objects/food.png"),
+				width: 50,
+				height: 50,
+				edgeTypes: [RectType.DISTINGUISHABLE, RectType.WINDOW],
+			});
 		});
 	}
 }

@@ -23,3 +23,6 @@ export class UtilsEngine {
 
 	public static wait = (millis: number) => new Promise((resolve) => setTimeout(resolve, millis));
 }
+
+export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+export type WithOptional<T, K extends keyof T> = Partial<Pick<T, K>> & Omit<T, K>;

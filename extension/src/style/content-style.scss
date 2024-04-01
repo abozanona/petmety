@@ -98,3 +98,10 @@ svg.vp-animation-debug {
 		stroke: gray;
 	}
 }
+
+.vp-disallow-scroll {
+	overflow: hidden;
+}
+.vp-object-instantiator {
+	cursor: none;
+}

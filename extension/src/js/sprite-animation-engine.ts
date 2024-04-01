@@ -10,12 +10,12 @@ import { CharacterAnimation } from "./player-engine";
 import { logger } from "./utils/logger";
 import { Constants } from "./utils/constants";
 
-type AnimationEngineOptions = {};
+type SpriteAnimationEngineOptions = {};
 
-export class AnimationEngine {
-	private defaultOptions: AnimationEngineOptions = {};
-	private options: AnimationEngineOptions;
-	constructor(opt: Partial<AnimationEngineOptions>) {
+export class SpriteAnimationEngine {
+	private defaultOptions: SpriteAnimationEngineOptions = {};
+	private options: SpriteAnimationEngineOptions;
+	constructor(opt: Partial<SpriteAnimationEngineOptions>) {
 		this.options = { ...this.defaultOptions, ...opt };
 		this.init();
 	}
