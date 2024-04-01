@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
 import { Spine } from "pixi-spine";
 import * as pixiUnsaveEvalFnPatch from "@pixi/unsafe-eval";
+import { logger } from "./utils/logger";
+import { Constants } from "./utils/constants";
 
 declare const spine: any;
-
-type IdSelector = `#${string}`;
 
 export enum CharacterAnimation {
 	Idle = "Idle",
@@ -20,14 +20,11 @@ type AnimationOptions = {
 };
 
 export class PlayerEngine {
-	private selector: IdSelector;
-	private timeoutID: NodeJS.Timeout;
-	spriteController: Spine;
+	private timeoutID: NodeJS.Timeout | undefined;
+	spriteController?: Spine;
 
-	constructor(selector: IdSelector) {
+	constructor() {
 		pixiUnsaveEvalFnPatch.install(PIXI);
-
-		this.selector = selector;
 
 		const app = new PIXI.Application({
 			backgroundColor: 0x000000,
@@ -36,11 +33,15 @@ export class PlayerEngine {
 			backgroundAlpha: 0,
 		});
 		app.stage.interactive = true;
-		document.querySelector(this.selector).appendChild(app.view);
+		document.querySelector(Constants.stageSelector)!.appendChild(app.view);
 
 		const loader = app.loader.add("sprite", chrome.runtime.getURL("/assets/cat.json"));
 
 		loader.load((loader, res) => {
+			if (!res.sprite.spineData) {
+				logger.error("Can't load spine file");
+				return;
+			}
 			this.spriteController = new Spine(res.sprite.spineData);
 			// spineboy
 			this.spriteController.scale.set(0.35);
@@ -66,7 +67,7 @@ export class PlayerEngine {
 		this.spriteController.state.setAnimation(0, characterAnimation, options.loop);
 		if (!options.loop) {
 			this.timeoutID = setTimeout(() => {
-				this.spriteController.state.setAnimation(0, CharacterAnimation.Idle, true);
+				this.spriteController?.state.setAnimation(0, CharacterAnimation.Idle, true);
 			}, 3000);
 		}
 	}

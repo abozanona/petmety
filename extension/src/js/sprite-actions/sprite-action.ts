@@ -2,6 +2,8 @@ export enum ActionPriority {
 	MAX_ACTION_PRIORITY = Infinity,
 	ACTION_IDLE = 100,
 	ACTION_JUMP = 101,
+	ACTION_SLEEP = 102,
+	ACTION_WALK_ON_EDGE = 103,
 	ACTION_JUMP_RECURSIVE_TO_POINT_IN_VIEW = 500,
 }
 
@@ -9,7 +11,7 @@ export abstract class SpriteAction {
 	public abstract priority: ActionPriority;
 	public abstract minExecutionTime: number;
 	public abstract maxExecutionTime: number;
-	public isCanceled: boolean;
+	public isCanceled: boolean = false;
 	public abstract selectionPrecondition(): boolean;
 	public abstract start(): Promise<void>;
 	// TODO: Force linting error if children are not calling super
@@ -19,7 +21,7 @@ export abstract class SpriteAction {
 			this.cancelCallbackFn();
 		}
 	}
-	cancelCallbackFn: () => void;
+	cancelCallbackFn: (() => void) | undefined;
 	public cancelCallback(cancelCallbackFn: () => void) {
 		this.cancelCallbackFn = cancelCallbackFn;
 	}

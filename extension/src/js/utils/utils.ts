@@ -3,9 +3,7 @@ declare const browser: any;
 
 export class UtilsEngine {
 	public static async loadTemplate(templatePath: string) {
-		const templateRes = await fetch(
-			UtilsEngine.browser.runtime.getURL(templatePath)
-		);
+		const templateRes = await fetch(UtilsEngine.browser.runtime.getURL(templatePath));
 		let templateHTML = await templateRes.text();
 		return templateHTML;
 	}
@@ -22,4 +20,6 @@ export class UtilsEngine {
 		}
 		return null;
 	})();
+
+	public static wait = (millis: number) => new Promise((resolve) => setTimeout(resolve, millis));
 }

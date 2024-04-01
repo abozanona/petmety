@@ -36,7 +36,7 @@ export class jumpRecursiveToPointInViewAction extends SpriteAction {
 	}
 
 	private isSpriteInviewPort(): boolean {
-		const spriteRect = document.querySelector("#vp-player-container").getBoundingClientRect();
+		const spriteRect = document.querySelector("#vp-player-container")!.getBoundingClientRect();
 		return EdgeDetector.isPointInViewPort({ x: spriteRect.x, y: spriteRect.y });
 	}
 }

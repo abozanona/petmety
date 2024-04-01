@@ -4,6 +4,7 @@ import { MenuEngine } from "./menu-engine";
 import { PlayerEngine } from "./player-engine";
 import { SpriteActionsEngine } from "./sprite-actions-engine";
 import { SpriteEngine } from "./sprite-engine";
+import { Constants } from "./utils/constants";
 
 class Store {
 	public edgeDetector: EdgeDetector;

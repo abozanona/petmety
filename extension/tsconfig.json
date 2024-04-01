@@ -10,7 +10,7 @@
     "noEmitOnError": true,
     "moduleResolution":"node",
     "typeRoots": ["node_modules/@types"],
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "jsx": "react"
   }
 }

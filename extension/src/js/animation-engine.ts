@@ -8,26 +8,21 @@ import { Parser } from "expr-eval";
 import { SpriteDirection } from "./sprite-engine";
 import { CharacterAnimation } from "./player-engine";
 import { logger } from "./utils/logger";
+import { Constants } from "./utils/constants";
 
-type AnimationEngineOptions = {
-	selector?: string;
-	debugMode?: boolean;
-};
+type AnimationEngineOptions = {};
 
 export class AnimationEngine {
-	private defaultOptions: AnimationEngineOptions = {
-		debugMode: false,
-		selector: "#vp-player-container",
-	};
+	private defaultOptions: AnimationEngineOptions = {};
 	private options: AnimationEngineOptions;
-	constructor(opt: AnimationEngineOptions) {
+	constructor(opt: Partial<AnimationEngineOptions>) {
 		this.options = { ...this.defaultOptions, ...opt };
 		this.init();
 	}
 	private init() {
 		gsap.registerPlugin(Draggable, MotionPathPlugin);
 
-		Draggable.create(this.options.selector, {
+		Draggable.create(Constants.stageSelector, {
 			type: "x,y",
 			dragClickables: false,
 			onDragEnd: this.dropToEdgeAfterDragEnds.bind(this), // On dragging the pet, drop vertically
@@ -36,7 +31,7 @@ export class AnimationEngine {
 
 	dropToEdgeAfterDragEnds(dragEndEvent: any) {
 		logger.info("dropToEdgeAfterDragEnds");
-		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
+		const spriteRect = document.querySelector(Constants.stageSelector)!.getBoundingClientRect();
 
 		const edges = store.edgeDetector.topVisibleEdges.filter(
 			(el) => el.start.y > dragEndEvent.clientY + spriteRect.height && el.start.x <= dragEndEvent.clientX && el.end.x >= dragEndEvent.clientX
@@ -56,12 +51,18 @@ export class AnimationEngine {
 		};
 		// drop down with a constant speed
 		const distance: number = Math.sqrt(Math.pow(dragEndEvent.clientY - moveTo.y, 2));
-		gsap.to(this.options.selector, { ...moveTo, duration: distance / 30 });
+		gsap.to(Constants.stageSelector, {
+			...moveTo,
+			duration: distance / 30,
+			onComplete: () => {
+				store.spriteEngine.spriteStatus.currentEdge = edge;
+			},
+		});
 	}
 
 	async singleJumpToPoint(destinationPoint: Point2d) {
 		logger.info("singleJumpToPoint");
-		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
+		const spriteRect = document.querySelector(Constants.stageSelector)!.getBoundingClientRect();
 		const startPoint: Point2d = {
 			x: spriteRect.x,
 			y: spriteRect.y + spriteRect.height,
@@ -98,10 +99,10 @@ export class AnimationEngine {
 			animation = "jumpSouthEast";
 		}
 
-		const animationSvg: HTMLElement = elem.querySelector(".vp-" + animation);
+		const animationSvg: HTMLElement = elem.querySelector(".vp-" + animation)!;
 		const pathId = "path-" + crypto.randomUUID();
-		animationSvg.querySelector("path").id = pathId;
-		if (this.options.debugMode) {
+		animationSvg.querySelector("path")!.id = pathId;
+		if (Constants.debugMode) {
 			animationSvg.classList.add("vp-animation-debug");
 		}
 		document.body.appendChild(animationSvg);
@@ -110,7 +111,7 @@ export class AnimationEngine {
 		animationSvg.style.height = Math.abs(destinationPoint.y - startPoint.y) + "px";
 		animationSvg.style.left = window.scrollX + Math.min(destinationPoint.x, startPoint.x) + "px";
 		animationSvg.style.top = window.scrollY + Math.min(destinationPoint.y, startPoint.y) + "px";
-		if (this.options.debugMode) {
+		if (Constants.debugMode) {
 			animationSvg.style.border = "solid 1px red";
 			animationSvg.style.zIndex = "999999999";
 		} else {
@@ -121,7 +122,7 @@ export class AnimationEngine {
 
 		// Move to edge
 		await new Promise<void>((resolve) => {
-			gsap.to(this.options.selector, {
+			gsap.to(Constants.stageSelector, {
 				duration: animationDuration,
 				ease: "power1.inOut",
 				motionPath: {
@@ -142,7 +143,7 @@ export class AnimationEngine {
 		// How to select next edge to jump to?
 		// 1. Should be within the max jump distance. If can't find one, then select the next closest edge to the sprite
 		// 2. Should be closer than other edges to the destination point
-		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
+		const spriteRect = document.querySelector(Constants.stageSelector)!.getBoundingClientRect();
 		const spriteLocation: Point2d = {
 			x: spriteRect.x,
 			y: spriteRect.y + spriteRect.height,
@@ -165,7 +166,7 @@ export class AnimationEngine {
 
 	async walkToPoint(destinationPoint: Point2d) {
 		logger.info("walkToPoint");
-		const spriteRect = document.querySelector(this.options.selector).getBoundingClientRect();
+		const spriteRect = document.querySelector(Constants.stageSelector)!.getBoundingClientRect();
 		const spriteLocation: Point2d = {
 			x: spriteRect.x,
 			y: spriteRect.y + spriteRect.height,
@@ -180,18 +181,19 @@ export class AnimationEngine {
 			store.spriteEngine.direction = SpriteDirection.RIGHT;
 		}
 		const moveTo = {
-			left: destinationPoint.x + spriteRect.x - (store.spriteEngine.direction = SpriteDirection.RIGHT ? spriteRect.width : 0), // destinationPointX + spriteX - spriteWidth
+			left: destinationPoint.x - (store.spriteEngine.direction == SpriteDirection.RIGHT ? spriteRect.width : 0), // destinationPointX - spriteWidth
 			top: destinationPoint.y + window.scrollY - spriteRect.height, //  destinationPointY + scrollY - spriteHeight
 			x: 0,
 			y: 0,
 		};
 		await new Promise<void>((resolve) => {
-			gsap.to(this.options.selector, {
+			gsap.to(Constants.stageSelector, {
 				...moveTo,
 				duration: distance / 100,
 				onComplete: () => resolve(),
 			});
 		});
 		store.playerEngine.playAnimation(CharacterAnimation.Idle, { loop: true });
+		await UtilsEngine.wait(3000);
 	}
 }

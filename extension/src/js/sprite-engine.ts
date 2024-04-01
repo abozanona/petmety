@@ -1,6 +1,7 @@
-type SpriteEngineOptions = {
-	selector?: string;
-};
+import { Edge } from "./edge-detector";
+import { Constants } from "./utils/constants";
+
+type SpriteEngineOptions = {};
 
 export enum SpriteDirection {
 	LEFT,
@@ -14,12 +15,11 @@ type SpriteStatus = {
 	happinessLevel: number;
 	satedLevel: number;
 	energyLevel: number;
+	currentEdge: Edge | undefined;
 };
 
 export class SpriteEngine {
-	private defaultOptions: SpriteEngineOptions = {
-		selector: "#vp-player-container",
-	};
+	private defaultOptions: SpriteEngineOptions = {};
 	private options: SpriteEngineOptions;
 
 	public spriteStatus: SpriteStatus = {
@@ -29,6 +29,7 @@ export class SpriteEngine {
 		happinessLevel: 15,
 		satedLevel: 27,
 		energyLevel: 61,
+		currentEdge: undefined,
 	};
 
 	private _direction: SpriteDirection = SpriteDirection.LEFT;
@@ -36,19 +37,23 @@ export class SpriteEngine {
 		return this._direction;
 	}
 	public set direction(newValue: SpriteDirection) {
+		const spriteElement = document.querySelector(Constants.stageSelector);
+		if (!spriteElement) {
+			return;
+		}
 		if (newValue !== this._direction) {
 			if (newValue === SpriteDirection.LEFT) {
-				document.querySelector(this.options.selector).classList.add("vp-direction-left");
-				document.querySelector(this.options.selector).classList.remove("vp-direction-right");
+				spriteElement.classList.add("vp-direction-left");
+				spriteElement.classList.remove("vp-direction-right");
 			} else {
-				document.querySelector(this.options.selector).classList.remove("vp-direction-left");
-				document.querySelector(this.options.selector).classList.add("vp-direction-right");
+				spriteElement.classList.remove("vp-direction-left");
+				spriteElement.classList.add("vp-direction-right");
 			}
 		}
 		this._direction = newValue;
 	}
 
-	constructor(opt: SpriteEngineOptions) {
+	constructor(opt: Partial<SpriteEngineOptions>) {
 		this.options = { ...this.defaultOptions, ...opt };
 	}
 }

@@ -1,10 +1,11 @@
+import { Constants } from "./utils/constants";
+
 const minNodeWidth = 200,
 	minNodeHeight = 1;
 
 type EdgeDetectorOptions = {
-	startNode?: HTMLElement;
-	debugMode?: boolean;
-	ignoreSelector?: string;
+	startNode: HTMLElement;
+	ignoreSelector: string;
 };
 
 enum EdgeOrientation {
@@ -142,14 +143,13 @@ export class EdgeDetector {
 	private nodesCount: number = 0;
 	private defaultOptions: EdgeDetectorOptions = {
 		startNode: document.body,
-		debugMode: false,
-		ignoreSelector: "#vp-player-container",
+		ignoreSelector: Constants.stageSelector,
 	};
 	private options: EdgeDetectorOptions;
 
 	private _foundRects: Rect[];
 
-	constructor(opt: EdgeDetectorOptions) {
+	constructor(opt: Partial<EdgeDetectorOptions>) {
 		this.nodesCount = 0;
 		this.options = { ...this.defaultOptions, ...opt };
 		this._foundRects = [];
@@ -171,25 +171,25 @@ export class EdgeDetector {
 	}
 
 	public get horizontalEdges(): Edge[] {
-		return this._foundRects.flatMap((edge) => [].concat(edge.translate.topEdge, edge.translate.bottomEdge));
+		return this._foundRects.flatMap((edge) => ([] as Edge[]).concat(edge.translate.topEdge, edge.translate.bottomEdge));
 	}
 
 	public get horizontalVisibleEdges(): Edge[] {
 		return this._foundRects
 			.filter((edge) => edge.visibility.top.isVisible || edge.visibility.bottom.isVisible)
-			.flatMap((edge) => [].concat(edge.visibility.top.isVisible ? edge.translate.topEdge : [], edge.visibility.bottom.isVisible ? edge.translate.bottomEdge : []));
+			.flatMap((edge) => ([] as Edge[]).concat(edge.visibility.top.isVisible ? edge.translate.topEdge : [], edge.visibility.bottom.isVisible ? edge.translate.bottomEdge : []));
 	}
 
 	public get topVisibleEdges(): Edge[] {
 		return this._foundRects
 			.filter((edge) => edge.visibility.top.isVisible)
-			.flatMap((edge) => [].concat(edge.visibility.top.isVisible ? edge.translate.topEdge : [], edge.visibility.bottom.isVisible ? edge.translate.bottomEdge : []));
+			.flatMap((edge) => ([] as Edge[]).concat(edge.visibility.top.isVisible ? edge.translate.topEdge : [], edge.visibility.bottom.isVisible ? edge.translate.bottomEdge : []));
 	}
 
 	public get verticalVisibleEdges(): Edge[] {
 		return this._foundRects
 			.filter((edge) => edge.visibility.right.isVisible || edge.visibility.left.isVisible)
-			.flatMap((edge) => [].concat(edge.visibility.right.isVisible ? edge.translate.rightEdge : [], edge.visibility.left.isVisible ? edge.translate.leftEdge : []));
+			.flatMap((edge) => ([] as Edge[]).concat(edge.visibility.right.isVisible ? edge.translate.rightEdge : [], edge.visibility.left.isVisible ? edge.translate.leftEdge : []));
 	}
 
 	public static isPointInViewPort(point: Point2d) {
@@ -228,7 +228,7 @@ export class EdgeDetector {
 	}
 
 	private injectCalculator() {
-		if (this.options.debugMode) {
+		if (Constants.debugMode) {
 			document.body.classList.add("vp-debug-mode");
 		} else {
 			document.body.classList.remove("vp-debug-mode");

@@ -1,9 +1,7 @@
-import { SpriteAction } from "./sprite-actions/sprite-action";
 import { ICompare, PriorityQueue } from "@datastructures-js/priority-queue";
-import { IdleAction } from "./sprite-actions/idle-action";
-import { JumpAction } from "./sprite-actions/jump-action";
 import { logger } from "./utils/logger";
-import { jumpRecursiveToPointInViewAction } from "./sprite-actions/jump-recursive-to-point-in-view-action";
+import { IdleAction, JumpAction, SleepAction, SpriteAction, jumpRecursiveToPointInViewAction as JumpRecursiveToPointInViewAction, WalkOnEdgeAction } from "./sprite-actions";
+import { throttle } from "throttle-debounce";
 
 const allActions: SpriteAction[] = [];
 
@@ -11,7 +9,9 @@ const allActions: SpriteAction[] = [];
 const fillAvailableActions = () => {
 	allActions.push(new IdleAction());
 	allActions.push(new JumpAction());
-	allActions.push(new jumpRecursiveToPointInViewAction());
+	allActions.push(new JumpRecursiveToPointInViewAction());
+	allActions.push(new SleepAction());
+	allActions.push(new WalkOnEdgeAction());
 };
 
 export class SpriteActionsEngine {
@@ -23,16 +23,19 @@ export class SpriteActionsEngine {
 
 	MAX_QUEUED_ACTIONS: number = 5;
 
-	currentAction: SpriteAction;
+	currentAction: SpriteAction | undefined;
 
-	calcelationTimeout: NodeJS.Timeout;
+	calcelationTimeout: NodeJS.Timeout | undefined;
 
 	get isActionRunning(): boolean {
 		return !!this.calcelationTimeout;
 	}
 
+	private throttleTick: throttle<() => Promise<void>>;
+
 	constructor() {
-		setInterval(this.tick.bind(this), 1000);
+		this.throttleTick = throttle(1000, this.tick);
+		setInterval(this.throttleTick.bind(this), 1000);
 		fillAvailableActions();
 	}
 
@@ -98,12 +101,14 @@ export class SpriteActionsEngine {
 		const calcelationTimeoutCallback = async () => {
 			clearTimeout(this.calcelationTimeout);
 			this.calcelationTimeout = undefined;
-			if (!this.currentAction.isCanceled) {
-				await this.currentAction.cancel();
+			if (this.currentAction) {
+				if (!this.currentAction.isCanceled) {
+					await this.currentAction.cancel();
+				}
+				// Reset action cancel status ofr future runs
+				this.currentAction.isCanceled = false;
 			}
-			// Reset action cancel status ofr future runs
-			this.currentAction.isCanceled = false;
-			this.tick();
+			this.throttleTick();
 		};
 		this.calcelationTimeout = setTimeout(calcelationTimeoutCallback.bind(this), this.currentAction.maxExecutionTime * 1000);
 
