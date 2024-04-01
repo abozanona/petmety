@@ -31,5 +31,9 @@ export class MenuEngine {
 				edgeTypes: [RectType.DISTINGUISHABLE, RectType.WINDOW],
 			});
 		});
+
+		document.querySelector("#vp-btn-show-hearts")!.addEventListener("click", () => {
+			store.playerEngine.showHearts();
+		});
 	}
 }

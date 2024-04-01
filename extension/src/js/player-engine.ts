@@ -3,6 +3,7 @@ import { Spine } from "pixi-spine";
 import * as pixiUnsaveEvalFnPatch from "@pixi/unsafe-eval";
 import { logger } from "./utils/logger";
 import { Constants } from "./utils/constants";
+import { UtilsEngine } from "./utils/utils";
 
 declare const spine: any;
 
@@ -21,28 +22,32 @@ type AnimationOptions = {
 
 export class PlayerEngine {
 	private timeoutID: NodeJS.Timeout | undefined;
+	private pixiApp: PIXI.Application;
+	private loadedResources: PIXI.utils.Dict<PIXI.LoaderResource> | undefined;
 	spriteController?: Spine;
 
 	constructor() {
 		pixiUnsaveEvalFnPatch.install(PIXI);
 
-		const app = new PIXI.Application({
+		this.pixiApp = new PIXI.Application({
 			backgroundColor: 0x000000,
 			width: 200,
 			height: 140,
 			backgroundAlpha: 0,
 		});
-		app.stage.interactive = true;
-		document.querySelector(Constants.stageSelector)!.appendChild(app.view);
+		this.pixiApp.stage.interactive = true;
+		document.querySelector(Constants.stageSelector)!.appendChild(this.pixiApp.view);
 
-		const loader = app.loader.add("sprite", chrome.runtime.getURL("/assets/cat.json"));
+		const loader = this.pixiApp.loader;
+		loader.add("sprite", chrome.runtime.getURL("/assets/cat.json"));
 
 		loader.load((loader, res) => {
-			if (!res.sprite.spineData) {
+			this.loadedResources = res;
+			if (!this.loadedResources.sprite.spineData) {
 				logger.error("Can't load spine file");
 				return;
 			}
-			this.spriteController = new Spine(res.sprite.spineData);
+			this.spriteController = new Spine(this.loadedResources.sprite.spineData);
 			// spineboy
 			this.spriteController.scale.set(0.35);
 			this.spriteController.state.setAnimation(0, "Idle", true);
@@ -51,7 +56,7 @@ export class PlayerEngine {
 
 			this.spriteController.position.set(80, 140);
 
-			app.stage.addChild(this.spriteController);
+			this.pixiApp.stage.addChild(this.spriteController);
 		});
 	}
 
@@ -69,6 +74,39 @@ export class PlayerEngine {
 			this.timeoutID = setTimeout(() => {
 				this.spriteController?.state.setAnimation(0, CharacterAnimation.Idle, true);
 			}, 3000);
+		}
+	}
+
+	async showHearts() {
+		if (!this.loadedResources) {
+			return;
+		}
+		const hearts: PIXI.Sprite[] = [];
+		const heartSpeed = 2;
+		let heartsCount = 10;
+		const gameLoop = (delta: number) => {
+			for (let i = 0; i < hearts.length; i++) {
+				hearts[i].y -= heartSpeed * delta;
+				if (hearts[i].position.y < 0) {
+					this.pixiApp.stage.removeChild(hearts[i]);
+					hearts.splice(i, 1);
+				}
+			}
+			if (!hearts.length && !heartsCount) {
+				this.pixiApp.ticker.remove(gameLoop);
+			}
+		};
+
+		this.pixiApp.ticker.add(gameLoop);
+		for (let i = heartsCount; i > 0; i--) {
+			const heart = PIXI.Sprite.from(chrome.runtime.getURL("/images/objects/heart.png"));
+			heart.scale.set(0.02);
+			heart.anchor;
+			heart.x = UtilsEngine.numberBetweenTwoNumbers(0, this.pixiApp.stage.width);
+			heart.y = UtilsEngine.numberBetweenTwoNumbers(100, 140);
+			this.pixiApp.stage.addChild(heart);
+			hearts.push(heart);
+			await UtilsEngine.wait(500 * Math.random());
 		}
 	}
 }
