@@ -75,7 +75,6 @@ export class SpriteActionsEngine {
 		if (!nextAction) {
 			return;
 		}
-		logger.info("Queuing action", nextAction);
 		this.pq.enqueue(nextAction);
 	}
 
@@ -115,6 +114,6 @@ export class SpriteActionsEngine {
 
 		this.currentAction.cancelCallback(calcelationTimeoutCallback.bind(this));
 		await this.currentAction.start();
-		logger.info("Executing action", this.currentAction);
+		logger.info("Executing action", this.currentAction.constructor.name);
 	}
 }

@@ -4,6 +4,7 @@ import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { store } from "./store";
 import { WithOptional, WithRequired } from "./utils/utils";
 import { Point2d, RectType } from "./edge-detector";
+import { GSAPHelper } from "./utils/gsap-helper";
 
 type ObjectAnimationEngineOptions = {
 	objectDom: Element;
@@ -58,7 +59,7 @@ export class ObjectAnimationEngine {
 		};
 		// drop down with a constant speed
 		const distance: number = Math.sqrt(Math.pow(objectLocation.y - moveTo.y, 2));
-		gsap.to(this.options.objectDom, {
+		GSAPHelper.to(this.options.objectDom, {
 			...moveTo,
 			duration: distance / 30,
 			onComplete: () => {

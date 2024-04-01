@@ -9,6 +9,7 @@ import { SpriteDirection } from "./sprite-engine";
 import { CharacterAnimation } from "./player-engine";
 import { logger } from "./utils/logger";
 import { Constants } from "./utils/constants";
+import { GSAPHelper } from "./utils/gsap-helper";
 
 type SpriteAnimationEngineOptions = {};
 
@@ -51,7 +52,7 @@ export class SpriteAnimationEngine {
 		};
 		// drop down with a constant speed
 		const distance: number = Math.sqrt(Math.pow(dragEndEvent.clientY - moveTo.y, 2));
-		gsap.to(Constants.stageSelector, {
+		GSAPHelper.to(Constants.stageSelector, {
 			...moveTo,
 			duration: distance / 30,
 			onComplete: () => {
@@ -122,7 +123,7 @@ export class SpriteAnimationEngine {
 
 		// Move to edge
 		await new Promise<void>((resolve) => {
-			gsap.to(Constants.stageSelector, {
+			GSAPHelper.to(Constants.stageSelector, {
 				duration: animationDuration,
 				ease: "power1.inOut",
 				motionPath: {
@@ -187,7 +188,7 @@ export class SpriteAnimationEngine {
 			y: 0,
 		};
 		await new Promise<void>((resolve) => {
-			gsap.to(Constants.stageSelector, {
+			GSAPHelper.to(Constants.stageSelector, {
 				...moveTo,
 				duration: distance / 100,
 				onComplete: () => resolve(),
