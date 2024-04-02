@@ -11,6 +11,8 @@ type ObjectInstantiatorOptions = {
 	imagePath: string;
 	width: number;
 	height: number;
+	left: number;
+	top: number;
 	edgeTypes: [RectType, ...Array<RectType>];
 };
 
@@ -19,12 +21,6 @@ export class ObjectInstantiatorEngine {
 		// create a dom invisible element that covers the full screen
 		const instantiationOverlay = document.createElement("div");
 		instantiationOverlay.classList.add("vp-object-instantiator");
-		instantiationOverlay.style.position = "absolute";
-		instantiationOverlay.style.left = "0";
-		instantiationOverlay.style.top = "0";
-		instantiationOverlay.style.width = "100%";
-		instantiationOverlay.style.height = "100%";
-		instantiationOverlay.style.zIndex = Constants.maxZIndex.toString();
 		document.body.classList.add("vp-disallow-scroll");
 		// On click, create a new object, make it fall down to the closest edge of type/types
 		instantiationOverlay.addEventListener("click", (event) => {
@@ -58,6 +54,8 @@ export class ObjectInstantiatorEngine {
 		instantiatedObject.src = opt.imagePath;
 		instantiatedObject.style.width = opt.width + "px";
 		instantiatedObject.style.height = opt.height + "px";
+		instantiatedObject.style.left = opt.left + "px";
+		instantiatedObject.style.top = opt.top + "px";
 		instantiatedObject.style.position = "absolute";
 		instantiationOverlay.appendChild(instantiatedObject);
 		instantiationOverlay.addEventListener("mousemove", (event) => {

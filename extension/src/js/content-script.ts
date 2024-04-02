@@ -25,6 +25,7 @@ import { UtilsEngine } from "./utils/utils";
 	store.animationEngine = new SpriteAnimationEngine({});
 
 	store.menuEngine = new MenuEngine();
+	await store.menuEngine.init();
 
 	store.spriteEngine = new SpriteEngine({});
 })();

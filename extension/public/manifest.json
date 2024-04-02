@@ -29,7 +29,7 @@
 	"version": "1.0.0",
 	"web_accessible_resources": [
 		{
-			"resources": ["assets/*", "images/*", "templates/*", "js/*.js.map"],
+			"resources": ["assets/*", "images/*", "templates/*", "js/*.js.map", "style/*"],
 			"matches": ["http://*/*", "https://*/*"]
 		}
 	]
