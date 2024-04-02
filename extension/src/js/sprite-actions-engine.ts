@@ -2,6 +2,7 @@ import { ICompare, PriorityQueue } from "@datastructures-js/priority-queue";
 import { logger } from "./utils/logger";
 import { IdleAction, JumpAction, SleepAction, SpriteAction, jumpRecursiveToPointInViewAction as JumpRecursiveToPointInViewAction, WalkOnEdgeAction, JumpToEdgeAction } from "./sprite-actions";
 import { throttle } from "throttle-debounce";
+import { store } from "./store";
 
 const allActions: SpriteAction[] = [];
 
@@ -42,7 +43,7 @@ export class SpriteActionsEngine {
 
 	async tick() {
 		await this.fillNextAction();
-		if (!this.isActionRunning) {
+		if (!this.isActionRunning && store.spriteEngine.customActionRunning === undefined) {
 			await this.executeNextAction();
 		}
 	}

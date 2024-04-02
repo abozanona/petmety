@@ -4,6 +4,9 @@ import * as pixiUnsaveEvalFnPatch from "@pixi/unsafe-eval";
 import { logger } from "./utils/logger";
 import { Constants } from "./utils/constants";
 import { UtilsEngine } from "./utils/utils";
+import { store } from "./store";
+import { debounce, throttle } from "throttle-debounce";
+import { CustomAction } from "./sprite-engine";
 
 declare const spine: any;
 
@@ -24,7 +27,33 @@ export class PlayerEngine {
 	private timeoutID: NodeJS.Timeout | undefined;
 	private pixiApp: PIXI.Application;
 	private loadedResources: PIXI.utils.Dict<PIXI.LoaderResource> | undefined;
-	spriteController?: Spine;
+	private spriteController?: Spine;
+
+	private mouseMovementCounter: number = 0;
+	private mouseMovementCallback() {
+		this.mouseMovementCounter++;
+		if (this.mouseMovementCounter == 2 || this.mouseMovementCounter % 4 == 0) {
+			store.playerEngine.showHearts();
+		}
+	}
+	private mouseMovementOffCallback() {
+		this.mouseMovementCounter = 0;
+		store.spriteEngine.customActionRunning = undefined;
+	}
+	private addAffectionListner() {
+		const mouseMovementCallbackThrottle = throttle(1000, this.mouseMovementCallback.bind(this));
+		const mouseMovementOffCallback = debounce(2000, this.mouseMovementOffCallback.bind(this));
+		const mouseMoveCallback = () => {
+			if (store.spriteEngine.customActionRunning !== undefined && store.spriteEngine.customActionRunning !== CustomAction.PETTING) {
+				return;
+			}
+			store.spriteEngine.customActionRunning = CustomAction.PETTING;
+			mouseMovementCallbackThrottle();
+			mouseMovementOffCallback();
+		};
+		// TODO: Play affection animation if not already been played
+		this.pixiApp.stage.on("mouseover", mouseMoveCallback.bind(this));
+	}
 
 	constructor() {
 		pixiUnsaveEvalFnPatch.install(PIXI);
@@ -58,6 +87,8 @@ export class PlayerEngine {
 
 			this.pixiApp.stage.addChild(this.spriteController);
 		});
+
+		this.addAffectionListner();
 	}
 
 	playAnimation(characterAnimation: CharacterAnimation, options: AnimationOptions) {

@@ -37,10 +37,6 @@ export class MenuEngine {
 				edgeTypes: [RectType.DISTINGUISHABLE, RectType.WINDOW],
 			});
 		});
-
-		this.menuShadowRoot.querySelector("#vp-btn-show-hearts")!.addEventListener("click", () => {
-			store.playerEngine.showHearts();
-		});
 	}
 
 	async init() {

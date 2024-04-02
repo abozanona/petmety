@@ -5,7 +5,7 @@ import { store } from "./store";
 import { Point2d } from "./edge-detector";
 import { UtilsEngine } from "./utils/utils";
 import { Parser } from "expr-eval";
-import { SpriteDirection } from "./sprite-engine";
+import { CustomAction, SpriteDirection } from "./sprite-engine";
 import { CharacterAnimation } from "./player-engine";
 import { logger } from "./utils/logger";
 import { Constants } from "./utils/constants";
@@ -26,6 +26,9 @@ export class SpriteAnimationEngine {
 		Draggable.create(Constants.stageSelector, {
 			type: "x,y",
 			dragClickables: false,
+			onDragStart: () => {
+				store.spriteEngine.customActionRunning = CustomAction.DRAGGING;
+			},
 			onDragEnd: this.dropToEdgeAfterDragEnds.bind(this), // On dragging the pet, drop vertically
 		});
 	}
@@ -57,6 +60,7 @@ export class SpriteAnimationEngine {
 			duration: distance / 30,
 			onComplete: () => {
 				store.spriteEngine.spriteStatus.currentEdge = edge;
+				store.spriteEngine.customActionRunning = undefined;
 			},
 		});
 	}

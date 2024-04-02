@@ -1,5 +1,7 @@
 import { Edge } from "./edge-detector";
+import { store } from "./store";
 import { Constants } from "./utils/constants";
+import { GSAPHelper } from "./utils/gsap-helper";
 
 type SpriteEngineOptions = {};
 
@@ -18,6 +20,11 @@ type SpriteStatus = {
 	currentEdge: Edge | undefined;
 };
 
+export enum CustomAction {
+	PETTING,
+	DRAGGING,
+}
+
 export class SpriteEngine {
 	private defaultOptions: SpriteEngineOptions = {};
 	private options: SpriteEngineOptions;
@@ -31,6 +38,21 @@ export class SpriteEngine {
 		energyLevel: 61,
 		currentEdge: undefined,
 	};
+
+	private _customActionRunning: CustomAction | undefined = undefined;
+	public get customActionRunning(): CustomAction | undefined {
+		return this._customActionRunning;
+	}
+	public set customActionRunning(value: CustomAction | undefined) {
+		if (value !== undefined) {
+			if (store.spriteActionsEngine.currentAction) {
+				// We should not cancel it since it may start more actions
+				store.spriteActionsEngine.currentAction = undefined;
+				GSAPHelper.killCurrentAnimation();
+			}
+		}
+		this._customActionRunning = value;
+	}
 
 	private _direction: SpriteDirection = SpriteDirection.LEFT;
 	public get direction(): SpriteDirection {

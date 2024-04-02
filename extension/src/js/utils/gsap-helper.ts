@@ -10,4 +10,10 @@ export class GSAPHelper {
 		this.lastAnimation = gsap.to(targets, vars);
 		return this.lastAnimation;
 	}
+
+	public static killCurrentAnimation() {
+		if (this.lastAnimation) {
+			this.lastAnimation.kill();
+		}
+	}
 }
