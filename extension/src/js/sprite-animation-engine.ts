@@ -41,9 +41,9 @@ export class SpriteAnimationEngine {
 			(el) => el.start.y > dragEndEvent.clientY + spriteRect.height && el.start.x <= dragEndEvent.clientX && el.end.x >= dragEndEvent.clientX
 		); // enges below the sprite
 
-		// Sort based on priority randomly, get edge with highest priority
+		// Sort based on rect type, get edge with highest priority
 		edges.sort((a, b) => {
-			return Math.random() * 10 * b.rectType * b.rectType - Math.random() * 10 * a.rectType * a.rectType;
+			return b.rectType - a.rectType;
 		});
 		const edge = edges[0];
 
