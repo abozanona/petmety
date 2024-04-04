@@ -1,4 +1,5 @@
 import { EdgeDetector, Point2d } from "../edge-detector";
+import { SpriteEngine } from "../sprite-engine";
 import { store } from "../store";
 import { ActionPriority, SpriteAction } from "./sprite-action";
 
@@ -10,7 +11,7 @@ export class jumpRecursiveToPointInViewAction extends SpriteAction {
 	private destinationVisiblePoint: Point2d = this.getVisiblePoint();
 
 	public selectionPrecondition() {
-		return !store.spriteEngine.spriteStatus.isSleeping && !this.isSpriteInviewPort();
+		return !SpriteEngine.gameStatus.sprite.isSleeping && !this.isSpriteInviewPort();
 	}
 	public async start() {
 		while (!this.isCanceled && !this.isSpriteInviewPort()) {

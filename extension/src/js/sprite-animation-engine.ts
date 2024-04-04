@@ -5,7 +5,7 @@ import { store } from "./store";
 import { Point2d } from "./edge-detector";
 import { UtilsEngine } from "./utils/utils";
 import { Parser } from "expr-eval";
-import { CustomAction, SpriteDirection } from "./sprite-engine";
+import { CustomAction, SpriteDirection, SpriteEngine } from "./sprite-engine";
 import { CharacterAnimation } from "./player-engine";
 import { logger } from "./utils/logger";
 import { Constants } from "./utils/constants";
@@ -59,7 +59,9 @@ export class SpriteAnimationEngine {
 			...moveTo,
 			duration: distance / 30,
 			onComplete: () => {
-				store.spriteEngine.spriteStatus.currentEdge = edge;
+				SpriteEngine.gameStatus.sprite.currentEdge = edge;
+				SpriteEngine.updateGameStatus();
+
 				store.spriteEngine.customActionRunning = undefined;
 			},
 		});

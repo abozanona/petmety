@@ -1,6 +1,7 @@
-import { RectType } from "./edge-detector";
-import { ObjectInstantiatorEngine, ObjectInstantiatorType } from "./objects-instantiator-engine";
+import { ObjectInstantiatorEngine } from "./objects-instantiator-engine";
 import { CharacterAnimation } from "./player-engine";
+import { CatFood } from "./spawnable-objects";
+import { SpriteEngine } from "./sprite-engine";
 import { store } from "./store";
 import { UtilsEngine } from "./utils/utils";
 
@@ -23,19 +24,33 @@ export class MenuEngine {
 		});
 
 		this.menuShadowRoot.querySelector("#vp-btn-anim-sleeping")!.addEventListener("click", () => {
-			store.spriteEngine.spriteStatus.isSleeping = !store.spriteEngine.spriteStatus.isSleeping;
+			SpriteEngine.gameStatus.sprite.isSleeping = !SpriteEngine.gameStatus.sprite.isSleeping;
+			SpriteEngine.updateGameStatus();
 		});
 
-		this.menuShadowRoot.querySelector("#vp-btn-create-food")!.addEventListener("click", (event: Event) => {
-			ObjectInstantiatorEngine.initiateObject({
-				type: ObjectInstantiatorType.FOOD,
-				imagePath: UtilsEngine.browser.runtime.getURL("/images/objects/food.png"),
-				width: 50,
-				height: 50,
-				left: (event as MouseEvent).clientX,
-				top: (event as MouseEvent).clientY,
-				edgeTypes: [RectType.DISTINGUISHABLE, RectType.WINDOW],
-			});
+		this.menuShadowRoot.querySelector("#vp-btn-create-food")!.addEventListener("click", async (event: Event) => {
+			await ObjectInstantiatorEngine.initiateObject(new CatFood(), { left: (event as MouseEvent).clientX, top: (event as MouseEvent).clientY });
+		});
+
+		this.menuShadowRoot.querySelector("#vp-btn-show-spawned-objects")!.addEventListener("click", async (event: Event) => {
+			const divContainer = document.createElement("div");
+			divContainer.classList.add("vp-spawned-objects-container");
+			document.body.appendChild(divContainer);
+
+			const menuTemplateHTML = await UtilsEngine.loadTemplate("/templates/spawned-objects.template.html");
+			const elem = document.createElement("div");
+			elem.innerHTML = menuTemplateHTML;
+			const spawnedObjectsShadowRoot = divContainer.attachShadow({ mode: "open" });
+			spawnedObjectsShadowRoot.appendChild(elem.childNodes[0]);
+
+			// inject css
+			var link = document.createElement("link");
+			link.id = "menu-style";
+			link.rel = "stylesheet";
+			link.type = "text/css";
+			link.href = UtilsEngine.browser.runtime.getURL("/style/content-style.css");
+			link.media = "all";
+			spawnedObjectsShadowRoot.appendChild(link);
 		});
 	}
 

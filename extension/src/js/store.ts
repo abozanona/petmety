@@ -7,16 +7,22 @@ import { SpriteEngine } from "./sprite-engine";
 import { Constants } from "./utils/constants";
 
 class Store {
+	// @ts-ignore:next-line
 	public edgeDetector: EdgeDetector;
 
+	// @ts-ignore:next-line
 	public animationEngine: SpriteAnimationEngine;
 
+	// @ts-ignore:next-line
 	public playerEngine: PlayerEngine;
 
+	// @ts-ignore:next-line
 	public spriteEngine: SpriteEngine;
 
+	// @ts-ignore:next-line
 	public menuEngine: MenuEngine;
 
+	// @ts-ignore:next-line
 	public spriteActionsEngine: SpriteActionsEngine;
 }
 

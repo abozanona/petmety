@@ -1,7 +1,9 @@
 import { Edge } from "./edge-detector";
+import { SpawnableObject } from "./spawnable-objects/spawnable-object";
 import { store } from "./store";
 import { Constants } from "./utils/constants";
 import { GSAPHelper } from "./utils/gsap-helper";
+import { SettingName, UtilsEngine } from "./utils/utils";
 
 type SpriteEngineOptions = {};
 
@@ -10,14 +12,52 @@ export enum SpriteDirection {
 	RIGHT,
 }
 
-type SpriteStatus = {
-	isSleeping: boolean;
-	playerLevel: number;
-	playerLevelProgress: number;
-	happinessLevel: number;
-	satedLevel: number;
-	energyLevel: number;
-	currentEdge: Edge | undefined;
+export type GameStatus = {
+	sprite: {
+		isSleeping: boolean;
+		happinessLevel: {
+			value: number;
+			lastUpdated: Date;
+		};
+		satedLevel: {
+			value: number;
+			lastUpdated: Date;
+		};
+		energyLevel: {
+			value: number;
+			lastUpdated: Date;
+		};
+		currentEdge: Edge | undefined;
+	};
+	player: {
+		level: number;
+		levelProgress: number;
+	};
+	spawnedObjects: SpawnableObject[];
+};
+
+export const defaultGameStatus: GameStatus = {
+	sprite: {
+		isSleeping: false,
+		happinessLevel: {
+			value: 100,
+			lastUpdated: new Date(),
+		},
+		satedLevel: {
+			value: 100,
+			lastUpdated: new Date(),
+		},
+		energyLevel: {
+			value: 100,
+			lastUpdated: new Date(),
+		},
+		currentEdge: undefined,
+	},
+	player: {
+		level: 5,
+		levelProgress: 13,
+	},
+	spawnedObjects: [],
 };
 
 export enum CustomAction {
@@ -28,16 +68,6 @@ export enum CustomAction {
 export class SpriteEngine {
 	private defaultOptions: SpriteEngineOptions = {};
 	private options: SpriteEngineOptions;
-
-	public spriteStatus: SpriteStatus = {
-		isSleeping: false,
-		playerLevel: 5,
-		playerLevelProgress: 13,
-		happinessLevel: 15,
-		satedLevel: 27,
-		energyLevel: 61,
-		currentEdge: undefined,
-	};
 
 	private _customActionRunning: CustomAction | undefined = undefined;
 	public get customActionRunning(): CustomAction | undefined {
@@ -75,7 +105,21 @@ export class SpriteEngine {
 		this._direction = newValue;
 	}
 
+	public async updateSpriteStatus() {
+		await SpriteEngine.updateGameStatus();
+		// read curent sprite status. If no status exists, get default one
+	}
+
+	public static gameStatus: GameStatus = defaultGameStatus;
+
+	public static updateGameStatus(): Promise<void> {
+		return UtilsEngine.setSettings(SettingName.GAME_STATUS, SpriteEngine.gameStatus);
+	}
+
 	constructor(opt: Partial<SpriteEngineOptions>) {
 		this.options = { ...this.defaultOptions, ...opt };
+		UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameStatus).then((gameStatus: GameStatus) => {
+			SpriteEngine.gameStatus = gameStatus;
+		});
 	}
 }

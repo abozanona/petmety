@@ -1,4 +1,5 @@
 import { RectType } from "../edge-detector";
+import { SpriteEngine } from "../sprite-engine";
 import { store } from "../store";
 import { UtilsEngine } from "../utils/utils";
 import { ActionPriority, SpriteAction } from "./sprite-action";
@@ -8,7 +9,7 @@ export class JumpToEdgeAction extends SpriteAction {
 	public minExecutionTime: number = 30;
 	public maxExecutionTime: number = 30;
 	public selectionPrecondition() {
-		return !store.spriteEngine.spriteStatus.isSleeping;
+		return !SpriteEngine.gameStatus.sprite.isSleeping;
 	}
 	public async start() {
 		const edges = store.edgeDetector.topVisibleEdges.filter((edge) => edge.rectType !== RectType.WINDOW);

@@ -1,23 +1,18 @@
-import { RectType } from "./edge-detector";
 import { ObjectAnimationEngine } from "./object-animation-engine";
+import { SpawnableObject } from "./spawnable-objects/spawnable-object";
+import { GameStatus, defaultGameStatus } from "./sprite-engine";
 import { Constants } from "./utils/constants";
-
-export enum ObjectInstantiatorType {
-	FOOD = 1,
-}
-
-type ObjectInstantiatorOptions = {
-	type: ObjectInstantiatorType;
-	imagePath: string;
-	width: number;
-	height: number;
-	left: number;
-	top: number;
-	edgeTypes: [RectType, ...Array<RectType>];
-};
+import { SettingName, UtilsEngine } from "./utils/utils";
 
 export class ObjectInstantiatorEngine {
-	public static initiateObject(opt: ObjectInstantiatorOptions) {
+	public static async initiateObject(spawnableObject: SpawnableObject, position: { left: number; top: number }) {
+		// check if object was already instantiated
+		const gameStatus: GameStatus = await UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameStatus);
+		if (!gameStatus.spawnedObjects.find((el) => el.id == spawnableObject.id)) {
+			gameStatus.spawnedObjects.push(spawnableObject);
+			await UtilsEngine.setSettings(SettingName.GAME_STATUS, gameStatus);
+		}
+
 		// create a dom invisible element that covers the full screen
 		const instantiationOverlay = document.createElement("div");
 		instantiationOverlay.classList.add("vp-object-instantiator");
@@ -28,17 +23,17 @@ export class ObjectInstantiatorEngine {
 			instantiationOverlay.remove();
 
 			const instantiatedObject = document.createElement("img");
-			instantiatedObject.src = opt.imagePath;
+			instantiatedObject.src = spawnableObject.imagePath;
 			instantiatedObject.style.position = "absolute";
-			instantiatedObject.style.width = opt.width + "px";
-			instantiatedObject.style.height = opt.height + "px";
+			instantiatedObject.style.width = spawnableObject.width + "px";
+			instantiatedObject.style.height = spawnableObject.height + "px";
 			instantiatedObject.style.left = window.scrollX + event.clientX + "px";
 			instantiatedObject.style.top = window.scrollY + event.clientY + "px";
 			instantiatedObject.style.zIndex = Constants.maxZIndex.toString();
 			document.body.appendChild(instantiatedObject);
 			const objectAnimation = new ObjectAnimationEngine({
 				objectDom: instantiatedObject,
-				edgeTypes: opt.edgeTypes,
+				edgeTypes: spawnableObject.edgeTypes,
 			});
 			objectAnimation.dropObject({
 				x: event.clientX,
@@ -51,11 +46,11 @@ export class ObjectInstantiatorEngine {
 
 		// attach a drawing to the cursor, the drawing moves along with the cursor
 		const instantiatedObject = document.createElement("img");
-		instantiatedObject.src = opt.imagePath;
-		instantiatedObject.style.width = opt.width + "px";
-		instantiatedObject.style.height = opt.height + "px";
-		instantiatedObject.style.left = opt.left + "px";
-		instantiatedObject.style.top = opt.top + "px";
+		instantiatedObject.src = spawnableObject.imagePath;
+		instantiatedObject.style.width = spawnableObject.width + "px";
+		instantiatedObject.style.height = spawnableObject.height + "px";
+		instantiatedObject.style.left = position.left + "px";
+		instantiatedObject.style.top = position.top + "px";
 		instantiatedObject.style.position = "absolute";
 		instantiationOverlay.appendChild(instantiatedObject);
 		instantiationOverlay.addEventListener("mousemove", (event) => {

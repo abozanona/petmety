@@ -5,6 +5,7 @@ import { store } from "./store";
 import { WithOptional, WithRequired } from "./utils/utils";
 import { Point2d, RectType } from "./edge-detector";
 import { GSAPHelper } from "./utils/gsap-helper";
+import { SpriteEngine } from "./sprite-engine";
 
 type ObjectAnimationEngineOptions = {
 	objectDom: Element;
@@ -63,7 +64,8 @@ export class ObjectAnimationEngine {
 			...moveTo,
 			duration: distance / 30,
 			onComplete: () => {
-				store.spriteEngine.spriteStatus.currentEdge = edge;
+				SpriteEngine.gameStatus.sprite.currentEdge = edge;
+				SpriteEngine.updateGameStatus();
 			},
 		});
 	}

@@ -25,7 +25,7 @@
 	"manifest_version": 3,
 	"name": "MyVirtualPet",
 	"options_page": "popup.html",
-	"permissions": ["activeTab", "storage"],
+	"permissions": ["activeTab", "storage", "alarms"],
 	"version": "1.0.0",
 	"web_accessible_resources": [
 		{

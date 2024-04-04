@@ -108,3 +108,9 @@ svg.vp-animation-debug {
 	height: 100% !important;
 	z-index: 2147483647 !important;
 }
+.vp-spawned-objects-container {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
