@@ -25,7 +25,7 @@ export class MenuEngine {
 
 		this.menuShadowRoot.querySelector("#vp-btn-anim-sleeping")!.addEventListener("click", () => {
 			SpriteEngine.gameStatus.sprite.isSleeping = !SpriteEngine.gameStatus.sprite.isSleeping;
-			SpriteEngine.updateGameStatus();
+			SpriteEngine.updateGameStatus(SpriteEngine.gameStatus);
 		});
 
 		this.menuShadowRoot.querySelector("#vp-btn-create-food")!.addEventListener("click", async (event: Event) => {
@@ -33,24 +33,7 @@ export class MenuEngine {
 		});
 
 		this.menuShadowRoot.querySelector("#vp-btn-show-spawned-objects")!.addEventListener("click", async (event: Event) => {
-			const divContainer = document.createElement("div");
-			divContainer.classList.add("vp-spawned-objects-container");
-			document.body.appendChild(divContainer);
-
-			const menuTemplateHTML = await UtilsEngine.loadTemplate("/templates/spawned-objects.template.html");
-			const elem = document.createElement("div");
-			elem.innerHTML = menuTemplateHTML;
-			const spawnedObjectsShadowRoot = divContainer.attachShadow({ mode: "open" });
-			spawnedObjectsShadowRoot.appendChild(elem.childNodes[0]);
-
-			// inject css
-			var link = document.createElement("link");
-			link.id = "menu-style";
-			link.rel = "stylesheet";
-			link.type = "text/css";
-			link.href = UtilsEngine.browser.runtime.getURL("/style/content-style.css");
-			link.media = "all";
-			spawnedObjectsShadowRoot.appendChild(link);
+			document.getElementById("#vp-spawned-objects-target")!.style.display = "block";
 		});
 	}
 

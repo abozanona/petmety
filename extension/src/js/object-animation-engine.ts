@@ -65,7 +65,7 @@ export class ObjectAnimationEngine {
 			duration: distance / 30,
 			onComplete: () => {
 				SpriteEngine.gameStatus.sprite.currentEdge = edge;
-				SpriteEngine.updateGameStatus();
+				SpriteEngine.updateGameStatus(SpriteEngine.gameStatus);
 			},
 		});
 	}

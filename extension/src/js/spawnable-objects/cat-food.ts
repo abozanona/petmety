@@ -3,6 +3,7 @@ import { UtilsEngine } from "../utils/utils";
 import { ObjectInstantiatorCategory, ObjectInstantiatorType, SpawnableObject } from "./spawnable-object";
 
 export class CatFood extends SpawnableObject {
+	public title: string;
 	public type: ObjectInstantiatorType;
 	public category: ObjectInstantiatorCategory;
 	public maxValue: number;
@@ -15,6 +16,7 @@ export class CatFood extends SpawnableObject {
 
 	public constructor() {
 		super();
+		this.title = "Cat Food";
 		this.category = ObjectInstantiatorCategory.CAT_FOOD;
 		this.type = ObjectInstantiatorType.FOOD_PLATE;
 		this.maxValue = 10;

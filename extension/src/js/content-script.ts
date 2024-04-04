@@ -9,6 +9,16 @@ import { Constants } from "./utils/constants";
 import { UtilsEngine } from "./utils/utils";
 
 (async () => {
+	const spawnedObjectsListContainer = document.createElement("div");
+	spawnedObjectsListContainer.id = "vp-spawned-objects-container";
+	spawnedObjectsListContainer.classList.add("vp-spawned-objects-target");
+	const spawnedObjectsListContainerShadow = spawnedObjectsListContainer.attachShadow({ mode: "open" });
+	document.body.appendChild(spawnedObjectsListContainer);
+
+	const spawnedObjectsListTarget = document.createElement("div");
+	spawnedObjectsListTarget.id = "vp-spawned-objects-target";
+	spawnedObjectsListContainerShadow.appendChild(spawnedObjectsListTarget);
+
 	const spriteTemplateHTML = await UtilsEngine.loadTemplate("/templates/sprite.template.html");
 	const elem = document.createElement("div");
 	elem.innerHTML = spriteTemplateHTML;

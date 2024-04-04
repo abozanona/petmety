@@ -24,6 +24,8 @@
 		"@babel/preset-env": "^7.17.10",
 		"@babel/preset-react": "^7.16.7",
 		"@types/chrome": "^0.0.183",
+		"@types/react": "^18.2.74",
+		"@types/react-dom": "^18.2.24",
 		"@types/throttle-debounce": "^5.0.2",
 		"babel-loader": "^8.2.5",
 		"copy-webpack-plugin": "^9.1.0",
@@ -51,6 +53,9 @@
 		"pino": "^8.19.0",
 		"pixi-spine": "^3.1.2",
 		"pixi.js": "^6.5.10",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-router-dom": "^6.22.3",
 		"throttle-debounce": "^5.0.0"
 	}
 }

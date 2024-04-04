@@ -1,6 +1,6 @@
 import { ObjectAnimationEngine } from "./object-animation-engine";
 import { SpawnableObject } from "./spawnable-objects/spawnable-object";
-import { GameStatus, defaultGameStatus } from "./sprite-engine";
+import { GameStatus, SpriteEngine, defaultGameStatus } from "./sprite-engine";
 import { Constants } from "./utils/constants";
 import { SettingName, UtilsEngine } from "./utils/utils";
 
@@ -8,8 +8,10 @@ export class ObjectInstantiatorEngine {
 	public static async initiateObject(spawnableObject: SpawnableObject, position: { left: number; top: number }) {
 		// check if object was already instantiated
 		const gameStatus: GameStatus = await UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameStatus);
+
 		if (!gameStatus.spawnedObjects.find((el) => el.id == spawnableObject.id)) {
 			gameStatus.spawnedObjects.push(spawnableObject);
+			SpriteEngine.gameStatus = gameStatus;
 			await UtilsEngine.setSettings(SettingName.GAME_STATUS, gameStatus);
 		}
 

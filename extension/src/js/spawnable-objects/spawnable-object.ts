@@ -21,6 +21,7 @@ export abstract class SpawnableObject {
 		this._id = value;
 	}
 
+	public abstract title: string;
 	public abstract category: ObjectInstantiatorCategory;
 	public abstract type: ObjectInstantiatorType;
 	public abstract maxValue: number;

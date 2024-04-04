@@ -106,19 +106,24 @@ export class SpriteEngine {
 	}
 
 	public async updateSpriteStatus() {
-		await SpriteEngine.updateGameStatus();
+		await SpriteEngine.updateGameStatus(SpriteEngine.gameStatus);
 		// read curent sprite status. If no status exists, get default one
 	}
 
 	public static gameStatus: GameStatus = defaultGameStatus;
 
-	public static updateGameStatus(): Promise<void> {
-		return UtilsEngine.setSettings(SettingName.GAME_STATUS, SpriteEngine.gameStatus);
+	public static updateGameStatus(gameStatus: GameStatus): Promise<void> {
+		return UtilsEngine.setSettings(SettingName.GAME_STATUS, gameStatus);
+	}
+
+	public static async getGameStatus(): Promise<GameStatus> {
+		SpriteEngine.gameStatus = await UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameStatus);
+		return SpriteEngine.gameStatus;
 	}
 
 	constructor(opt: Partial<SpriteEngineOptions>) {
 		this.options = { ...this.defaultOptions, ...opt };
-		UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameStatus).then((gameStatus: GameStatus) => {
+		SpriteEngine.getGameStatus().then((gameStatus: GameStatus) => {
 			SpriteEngine.gameStatus = gameStatus;
 		});
 	}
