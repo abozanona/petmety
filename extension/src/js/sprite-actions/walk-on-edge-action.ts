@@ -3,6 +3,7 @@ import { store } from "../store";
 import { ActionPriority, SpriteAction } from "./sprite-action";
 import { UtilsEngine } from "../utils/utils";
 import { SpriteEngine } from "../sprite-engine";
+import { CharacterAnimation } from "../player-engine";
 
 export class WalkOnEdgeAction extends SpriteAction {
 	public priority: ActionPriority = ActionPriority.ACTION_WALK_ON_EDGE;
@@ -35,6 +36,7 @@ export class WalkOnEdgeAction extends SpriteAction {
 		await this.cancel();
 	}
 	public async cancel() {
+		store.playerEngine.playAnimation(CharacterAnimation.Idle, { loop: true });
 		super.cancel();
 	}
 
