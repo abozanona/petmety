@@ -5,7 +5,8 @@ import { UtilsEngine } from "./utils/utils";
 store.spriteEngine = new SpriteEngine({});
 
 UtilsEngine.browser.runtime.onInstalled.addListener(async () => {
-	store.spriteEngine.updateSpriteStatus();
+	// UtilsEngine.browser.storage.local.clear();
+	// UtilsEngine.browser.storage.sync.clear();
 	await UtilsEngine.browser.alarms.create("sprite-status-sync", {
 		// TODO: set to 20 later
 		// periodInMinutes: 20,
@@ -19,35 +20,35 @@ UtilsEngine.browser.alarms.onAlarm.addListener(async (alarm) => {
 
 		// Update happinessLevel
 		const happinessLevel = gameStatus.sprite.happinessLevel;
-		const happinessLevelDiff = happinessLevel.decrementValue * Math.floor(Math.abs(+new Date() - +happinessLevel.updatedAt) / 1000 / 60);
+		const happinessLevelDiff = happinessLevel.decrementValue * Math.floor(Math.abs(+new Date() - happinessLevel.updatedAt) / 1000 / 60 / happinessLevel.decrementEachMinutes);
 		if (happinessLevelDiff) {
 			happinessLevel.value = happinessLevel.value - happinessLevelDiff;
 			if (happinessLevel.value < 0) {
 				happinessLevel.value = 0;
 			}
-			happinessLevel.updatedAt = new Date();
+			happinessLevel.updatedAt = +new Date();
 		}
 
 		// Update satedLevel
 		const satedLevel = gameStatus.sprite.satedLevel;
-		const satedLevelDiff = satedLevel.decrementValue * Math.floor(Math.abs(+new Date() - +satedLevel.updatedAt) / 1000 / 60);
+		const satedLevelDiff = satedLevel.decrementValue * Math.floor(Math.abs(+new Date() - satedLevel.updatedAt) / 1000 / 60 / satedLevel.decrementEachMinutes);
 		if (satedLevelDiff) {
 			satedLevel.value = satedLevel.value - satedLevelDiff;
 			if (satedLevel.value < 0) {
 				satedLevel.value = 0;
 			}
-			satedLevel.updatedAt = new Date();
+			satedLevel.updatedAt = +new Date();
 		}
 
 		// Update energyLevel
 		const energyLevel = gameStatus.sprite.energyLevel;
-		const energyLevelDiff = energyLevel.decrementValue * Math.floor(Math.abs(+new Date() - +energyLevel.updatedAt) / 1000 / 60);
+		const energyLevelDiff = energyLevel.decrementValue * Math.floor(Math.abs(+new Date() - energyLevel.updatedAt) / 1000 / 60 / energyLevel.decrementEachMinutes);
 		if (energyLevelDiff) {
 			energyLevel.value = energyLevel.value - energyLevelDiff;
 			if (energyLevel.value < 0) {
 				energyLevel.value = 0;
 			}
-			energyLevel.updatedAt = new Date();
+			energyLevel.updatedAt = +new Date();
 		}
 
 		await SpriteEngine.updateGameStatus(gameStatus);

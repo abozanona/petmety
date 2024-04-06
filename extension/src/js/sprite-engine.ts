@@ -17,19 +17,19 @@ export type GameStatus = {
 		isSleeping: boolean;
 		happinessLevel: {
 			value: number;
-			updatedAt: Date;
+			updatedAt: number;
 			decrementEachMinutes: number;
 			decrementValue: number;
 		};
 		satedLevel: {
 			value: number;
-			updatedAt: Date;
+			updatedAt: number;
 			decrementEachMinutes: number;
 			decrementValue: number;
 		};
 		energyLevel: {
 			value: number;
-			updatedAt: Date;
+			updatedAt: number;
 			decrementEachMinutes: number;
 			decrementValue: number;
 		};
@@ -47,19 +47,19 @@ export const defaultGameStatus: GameStatus = {
 		isSleeping: false,
 		happinessLevel: {
 			value: 100,
-			updatedAt: new Date(),
+			updatedAt: +new Date(),
 			decrementEachMinutes: 10,
 			decrementValue: 5,
 		},
 		satedLevel: {
 			value: 100,
-			updatedAt: new Date(),
+			updatedAt: +new Date(),
 			decrementEachMinutes: 10,
 			decrementValue: 5,
 		},
 		energyLevel: {
 			value: 100,
-			updatedAt: new Date(),
+			updatedAt: +new Date(),
 			decrementEachMinutes: 10,
 			decrementValue: 5,
 		},

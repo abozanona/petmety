@@ -30,6 +30,9 @@ class ObjectSpritesApp extends Component<{}, { spawnedObjects: SpawnableObject[]
 								</div>
 							);
 						})}
+						<div>Sated: {SpriteEngine.gameStatus.sprite.satedLevel.value}</div>
+						<div>Happiness: {SpriteEngine.gameStatus.sprite.happinessLevel.value}</div>
+						<div>Energy: {SpriteEngine.gameStatus.sprite.energyLevel.value}</div>
 					</div>
 				</div>
 			</React.Fragment>
