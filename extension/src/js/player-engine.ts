@@ -32,7 +32,7 @@ export class PlayerEngine {
 	private mouseMovementCounter: number = 0;
 	private mouseMovementCallback() {
 		this.mouseMovementCounter++;
-		if (this.mouseMovementCounter == 2 || this.mouseMovementCounter % 4 == 0) {
+		if (this.mouseMovementCounter > 4 && this.mouseMovementCounter % 4 == 0) {
 			store.playerEngine.showHearts();
 		}
 	}
