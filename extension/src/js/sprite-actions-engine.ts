@@ -1,6 +1,15 @@
 import { ICompare, PriorityQueue } from "@datastructures-js/priority-queue";
 import { logger } from "./utils/logger";
-import { IdleAction, JumpAction, SleepAction, SpriteAction, jumpRecursiveToPointInViewAction as JumpRecursiveToPointInViewAction, WalkOnEdgeAction, JumpToEdgeAction } from "./sprite-actions";
+import {
+	IdleAction,
+	JumpAction,
+	SleepAction,
+	SpriteAction,
+	jumpRecursiveToPointInViewAction as JumpRecursiveToPointInViewAction,
+	WalkOnEdgeAction,
+	JumpToEdgeAction,
+	EatFoodAction,
+} from "./sprite-actions";
 import { throttle } from "throttle-debounce";
 import { store } from "./store";
 
@@ -14,6 +23,7 @@ const fillAvailableActions = () => {
 	allActions.push(new SleepAction());
 	allActions.push(new WalkOnEdgeAction());
 	allActions.push(new JumpToEdgeAction());
+	allActions.push(new EatFoodAction());
 };
 
 export class SpriteActionsEngine {
@@ -54,7 +64,7 @@ export class SpriteActionsEngine {
 		}
 		// TODO: should add more randomness
 		const nextAction: SpriteAction = allActions
-			.filter((action) => action.selectionPrecondition())
+			.filter(async (action) => await action.selectionPrecondition())
 			// Sort based on priority
 			.sort((a1, a2) => {
 				// Don't add already existing actions
@@ -93,7 +103,7 @@ export class SpriteActionsEngine {
 			return;
 		}
 		const action = this.pq.dequeue();
-		if (!action.selectionPrecondition()) {
+		if (!(await action.selectionPrecondition())) {
 			await this.fillNextAction();
 			// TODO: We should have a default action to run here
 			return;

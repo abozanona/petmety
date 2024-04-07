@@ -29,7 +29,10 @@ export class MenuEngine {
 		});
 
 		this.menuShadowRoot.querySelector("#vp-btn-create-food")!.addEventListener("click", async (event: Event) => {
-			await ObjectInstantiatorEngine.initiateObject(new CatFood(), { left: (event as MouseEvent).clientX, top: (event as MouseEvent).clientY });
+			const catFood = new CatFood();
+			const tabId = await UtilsEngine.getTabId();
+			catFood.spawnedOnTabId = tabId;
+			await ObjectInstantiatorEngine.initiateObject(catFood, { left: (event as MouseEvent).clientX, top: (event as MouseEvent).clientY });
 		});
 
 		this.menuShadowRoot.querySelector("#vp-btn-show-spawned-objects")!.addEventListener("click", async (event: Event) => {

@@ -25,6 +25,7 @@ export class ObjectInstantiatorEngine {
 			instantiationOverlay.remove();
 
 			const instantiatedObject = document.createElement("img");
+			instantiatedObject.dataset["vp_object_id"] = spawnableObject.id;
 			instantiatedObject.src = spawnableObject.imagePath;
 			instantiatedObject.style.position = "absolute";
 			instantiatedObject.style.width = spawnableObject.width + "px";

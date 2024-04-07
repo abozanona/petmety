@@ -5,3 +5,4 @@ export { jumpRecursiveToPointInViewAction } from "./jump-recursive-to-point-in-v
 export { SleepAction } from "./sleep-action";
 export { WalkOnEdgeAction } from "./walk-on-edge-action";
 export { JumpToEdgeAction } from "./jump-to-edge-action";
+export { EatFoodAction } from "./eat-food-action";

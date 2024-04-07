@@ -60,3 +60,14 @@ let user = {
 	version: manifest.version,
 };
 UtilsEngine.browser.runtime.setUninstallURL(`https://docs.google.com/forms/d/e/1FAIpQLSchwIEPLVcl54IOHZOrQ8s_2jyWE_ea2Njk8kajZtUwPmNFcQ/viewform?entry.280944084=${user.version}`);
+
+UtilsEngine.browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+	if (msg.code == "Q_TAB_ID") {
+		sendResponse({
+			code: "A_TAB_ID",
+			body: {
+				tabId: sender.tab!.id,
+			},
+		});
+	}
+});

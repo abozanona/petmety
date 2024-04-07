@@ -6,6 +6,7 @@ export enum ActionPriority {
 	ACTION_WALK_ON_EDGE = 103,
 	ACTION_JUMP_TO_EDGE = 104,
 	ACTION_JUMP_RECURSIVE_TO_POINT_IN_VIEW = 500,
+	ACTION_EAT_FOOD = 1000,
 }
 
 export abstract class SpriteAction {
@@ -13,7 +14,7 @@ export abstract class SpriteAction {
 	public abstract minExecutionTime: number;
 	public abstract maxExecutionTime: number;
 	public isCanceled: boolean = false;
-	public abstract selectionPrecondition(): boolean;
+	public abstract selectionPrecondition(): Promise<boolean>;
 	public abstract start(): Promise<void>;
 	// TODO: Force linting error if children are not calling super
 	public async cancel(): Promise<void> {

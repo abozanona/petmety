@@ -8,7 +8,7 @@ export class JumpToEdgeAction extends SpriteAction {
 	public priority: ActionPriority = ActionPriority.ACTION_JUMP_TO_EDGE;
 	public minExecutionTime: number = 30;
 	public maxExecutionTime: number = 30;
-	public selectionPrecondition() {
+	public async selectionPrecondition() {
 		return !SpriteEngine.gameStatus.sprite.isSleeping;
 	}
 	public async start() {

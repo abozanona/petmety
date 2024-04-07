@@ -27,7 +27,7 @@ export class UtilsEngine {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}
 
-	public static getTabId(): Promise<string> {
+	public static getTabId(): Promise<number> {
 		return new Promise(function (resolve, reject) {
 			UtilsEngine.browser.runtime
 				.sendMessage({ code: "Q_TAB_ID" })

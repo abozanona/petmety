@@ -7,7 +7,7 @@ export class JumpAction extends SpriteAction {
 	public priority: ActionPriority = ActionPriority.ACTION_JUMP;
 	public minExecutionTime: number = 5;
 	public maxExecutionTime: number = 5;
-	public selectionPrecondition() {
+	public async selectionPrecondition() {
 		return !SpriteEngine.gameStatus.sprite.isSleeping;
 	}
 	public async start() {

@@ -8,7 +8,7 @@ export class SleepAction extends SpriteAction {
 	public minExecutionTime: number = 60;
 	public maxExecutionTime: number = 60;
 	private isSleepAnimationExecuted: boolean = false;
-	public selectionPrecondition() {
+	public async selectionPrecondition() {
 		return SpriteEngine.gameStatus.sprite.isSleeping;
 	}
 	public async start() {

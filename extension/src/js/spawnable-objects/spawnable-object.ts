@@ -10,28 +10,19 @@ export enum ObjectInstantiatorType {
 }
 
 export abstract class SpawnableObject {
-	private _id: string | undefined;
-	public get id(): string {
-		if (!this._id) {
-			this._id = UtilsEngine.uuid();
-		}
-		return this._id;
-	}
-	public set id(value: string) {
-		this._id = value;
-	}
-
+	public id: string | undefined;
 	public abstract title: string;
 	public abstract category: ObjectInstantiatorCategory;
 	public abstract type: ObjectInstantiatorType;
 	public abstract maxValue: number;
 	public abstract remainingValue: number;
-	public abstract lastUpdated: Date;
+	public abstract updatedAt: Number;
 	public abstract imagePath: string;
 	public abstract width: number;
 	public abstract height: number;
 	public abstract edgeTypes: [RectType, ...Array<RectType>];
+	public abstract spawnedOnTabId?: number;
 	public constructor() {
-		this._id = UtilsEngine.uuid();
+		this.id = UtilsEngine.uuid();
 	}
 }

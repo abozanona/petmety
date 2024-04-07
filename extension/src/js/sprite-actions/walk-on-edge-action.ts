@@ -9,7 +9,7 @@ export class WalkOnEdgeAction extends SpriteAction {
 	public priority: ActionPriority = ActionPriority.ACTION_WALK_ON_EDGE;
 	public minExecutionTime: number = 60;
 	public maxExecutionTime: number = 60;
-	public selectionPrecondition() {
+	public async selectionPrecondition() {
 		return !SpriteEngine.gameStatus.sprite.isSleeping && SpriteEngine.gameStatus.sprite.currentEdge != undefined;
 	}
 	public async start() {
