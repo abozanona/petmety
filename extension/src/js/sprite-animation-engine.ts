@@ -46,6 +46,9 @@ export class SpriteAnimationEngine {
 			return b.rectType - a.rectType;
 		});
 		const edge = edges[0];
+		if (!edge) {
+			return;
+		}
 
 		const moveTo = {
 			left: spriteRect.x + window.scrollX, // spriteX + scrollX
