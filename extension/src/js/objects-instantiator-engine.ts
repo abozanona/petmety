@@ -1,18 +1,14 @@
+import { StorePublic } from "../app/app-context/store-context";
 import { ObjectAnimationEngine } from "./object-animation-engine";
 import { SpawnableObject } from "./spawnable-objects/spawnable-object";
-import { GameStatus, SpriteEngine, defaultGameStatus } from "./sprite-engine";
 import { Constants } from "./utils/constants";
-import { SettingName, UtilsEngine } from "./utils/utils";
 
 export class ObjectInstantiatorEngine {
 	public static async initiateObject(spawnableObject: SpawnableObject, position: { left: number; top: number }) {
 		// check if object was already instantiated
-		const gameStatus: GameStatus = await UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameStatus);
-
-		if (!gameStatus.spawnedObjects.find((el) => el.id == spawnableObject.id)) {
-			gameStatus.spawnedObjects.push(spawnableObject);
-			SpriteEngine.gameStatus = gameStatus;
-			await UtilsEngine.setSettings(SettingName.GAME_STATUS, gameStatus);
+		if (!StorePublic.ctx.store.spawnedObjects.find((el) => el.id == spawnableObject.id)) {
+			StorePublic.ctx.store.spawnedObjects.push(spawnableObject);
+			StorePublic.ctx.updateState(StorePublic.ctx);
 		}
 
 		// create a dom invisible element that covers the full screen

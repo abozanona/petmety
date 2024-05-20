@@ -1,9 +1,9 @@
 import { CharacterAnimation } from "../player-engine";
 import { ObjectInstantiatorCategory } from "../spawnable-objects/spawnable-object";
-import { SpriteEngine } from "../sprite-engine";
-import { store } from "../store";
+import { store } from "../engines";
 import { UtilsEngine } from "../utils/utils";
 import { ActionPriority, SpriteAction } from "./sprite-action";
+import { StorePublic } from "../../app/app-context/store-context";
 
 export class EatFoodAction extends SpriteAction {
 	public priority: ActionPriority = ActionPriority.ACTION_EAT_FOOD;
@@ -13,11 +13,10 @@ export class EatFoodAction extends SpriteAction {
 	public async selectionPrecondition() {
 		const tabId = await UtilsEngine.getTabId();
 		// TODO: Need to load it async in the future
-		await SpriteEngine.getGameStatus();
 		return (
-			!SpriteEngine.gameStatus.sprite.isSleeping && // Not sleepint
-			SpriteEngine.gameStatus.sprite.satedLevel.value < 60 && // Hungry
-			SpriteEngine.gameStatus.spawnedObjects.some(
+			!StorePublic.ctx.store.sprite.isSleeping && // Not sleepint
+			StorePublic.ctx.store.sprite.satedLevel.value < 60 && // Hungry
+			StorePublic.ctx.store.spawnedObjects.some(
 				(el) =>
 					el.category === ObjectInstantiatorCategory.CAT_FOOD && // It's a food
 					el.remainingValue > 0 &&
@@ -27,7 +26,7 @@ export class EatFoodAction extends SpriteAction {
 		);
 	}
 	public async start() {
-		const objectToEat = SpriteEngine.gameStatus.spawnedObjects
+		const objectToEat = StorePublic.ctx.store.spawnedObjects
 			.filter((el) => el.category === ObjectInstantiatorCategory.CAT_FOOD && el.remainingValue > 0)
 			.sort((_, __) => Math.random() - Math.random())[0];
 		const objectDomRect = document.querySelector(`[data-vp_object_id="${objectToEat.id}"]`)!.getBoundingClientRect();
@@ -36,17 +35,17 @@ export class EatFoodAction extends SpriteAction {
 			y: objectDomRect.top + objectDomRect.height,
 		});
 		store.playerEngine.playAnimation(CharacterAnimation.Eating, { loop: true });
-		while (!this.isCanceled && SpriteEngine.gameStatus.sprite.satedLevel.value != 100 && objectToEat.remainingValue !== 0) {
-			const amountToEat = Math.min(10, objectToEat.remainingValue, 100 - SpriteEngine.gameStatus.sprite.satedLevel.value);
+		while (!this.isCanceled && StorePublic.ctx.store.sprite.satedLevel.value != 100 && objectToEat.remainingValue !== 0) {
+			const amountToEat = Math.min(10, objectToEat.remainingValue, 100 - StorePublic.ctx.store.sprite.satedLevel.value);
 
-			const originalObjectToEat = SpriteEngine.gameStatus.spawnedObjects.find((el) => el.id === objectToEat.id);
+			const originalObjectToEat = StorePublic.ctx.store.spawnedObjects.find((el) => el.id === objectToEat.id);
 			if (originalObjectToEat === undefined) {
 				break;
 			}
 			originalObjectToEat.remainingValue -= 10;
 			originalObjectToEat.updatedAt = +new Date();
-			SpriteEngine.gameStatus.sprite.satedLevel.value += amountToEat;
-			await SpriteEngine.updateGameStatus(SpriteEngine.gameStatus);
+			StorePublic.ctx.store.sprite.satedLevel.value += amountToEat;
+			StorePublic.ctx.updateState(StorePublic.ctx);
 			UtilsEngine.wait(3 * 1000);
 		}
 		store.playerEngine.playAnimation(CharacterAnimation.Idle, { loop: true });

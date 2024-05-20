@@ -4,7 +4,7 @@ import * as pixiUnsaveEvalFnPatch from "@pixi/unsafe-eval";
 import { logger } from "./utils/logger";
 import { Constants } from "./utils/constants";
 import { UtilsEngine } from "./utils/utils";
-import { store } from "./store";
+import { store } from "./engines";
 import { debounce, throttle } from "throttle-debounce";
 import { CustomAction } from "./sprite-engine";
 

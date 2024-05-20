@@ -5,10 +5,9 @@ const webpack = require("webpack");
 
 module.exports = {
 	entry: {
-		"objects-sprite": path.resolve("./src/apps/objects-sprite.tsx"),
+		"objects-sprite": path.resolve("./src/app/objects-sprite.tsx"),
 		popup: path.resolve("./popup.html"),
 		backgound: path.resolve("./src/js/background.ts"),
-		"content-script": path.resolve("./src/js/content-script.ts"),
 		"content-style": path.resolve("./src/style/content-style.scss"),
 	},
 	output: {

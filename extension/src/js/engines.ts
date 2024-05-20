@@ -1,12 +1,11 @@
 import { SpriteAnimationEngine } from "./sprite-animation-engine";
 import { EdgeDetector } from "./edge-detector";
-import { MenuEngine } from "./menu-engine";
+import { MenuEngine } from "./MenuEngine";
 import { PlayerEngine } from "./player-engine";
 import { SpriteActionsEngine } from "./sprite-actions-engine";
 import { SpriteEngine } from "./sprite-engine";
-import { Constants } from "./utils/constants";
 
-class Store {
+class Engines {
 	// @ts-ignore:next-line
 	public edgeDetector: EdgeDetector;
 
@@ -26,4 +25,4 @@ class Store {
 	public spriteActionsEngine: SpriteActionsEngine;
 }
 
-export const store = new Store();
+export const store = new Engines();

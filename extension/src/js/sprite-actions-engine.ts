@@ -11,7 +11,7 @@ import {
 	EatFoodAction,
 } from "./sprite-actions";
 import { throttle } from "throttle-debounce";
-import { store } from "./store";
+import { store } from "./engines";
 
 const allActions: SpriteAction[] = [];
 

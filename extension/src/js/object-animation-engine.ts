@@ -1,11 +1,11 @@
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
-import { store } from "./store";
+import { store } from "./engines";
 import { WithOptional, WithRequired } from "./utils/utils";
 import { Point2d, RectType } from "./edge-detector";
 import { GSAPHelper } from "./utils/gsap-helper";
-import { SpriteEngine } from "./sprite-engine";
+import { StorePublic } from "../app/app-context/store-context";
 
 type ObjectAnimationEngineOptions = {
 	objectDom: Element;
@@ -67,8 +67,8 @@ export class ObjectAnimationEngine {
 			...moveTo,
 			duration: distance / 30,
 			onComplete: () => {
-				SpriteEngine.gameStatus.sprite.currentEdge = edge;
-				SpriteEngine.updateGameStatus(SpriteEngine.gameStatus);
+				StorePublic.ctx.store.sprite.currentEdge = edge;
+				StorePublic.ctx.updateState(StorePublic.ctx);
 			},
 		});
 	}

@@ -1,6 +1,7 @@
 import { SpriteEngine } from "./sprite-engine";
-import { store } from "./store";
+import { store } from "./engines";
 import { UtilsEngine } from "./utils/utils";
+import { StorePublic } from "../app/app-context/store-context";
 
 store.spriteEngine = new SpriteEngine({});
 
@@ -16,10 +17,8 @@ UtilsEngine.browser.runtime.onInstalled.addListener(async () => {
 
 UtilsEngine.browser.alarms.onAlarm.addListener(async (alarm) => {
 	if (alarm.name === "sprite-status-sync") {
-		const gameStatus = await SpriteEngine.getGameStatus();
-
 		// Update happinessLevel
-		const happinessLevel = gameStatus.sprite.happinessLevel;
+		const happinessLevel = StorePublic.ctx.store.sprite.happinessLevel;
 		const happinessLevelDiff = happinessLevel.decrementValue * Math.floor(Math.abs(+new Date() - happinessLevel.updatedAt) / 1000 / 60 / happinessLevel.decrementEachMinutes);
 		if (happinessLevelDiff) {
 			happinessLevel.value = happinessLevel.value - happinessLevelDiff;
@@ -30,7 +29,7 @@ UtilsEngine.browser.alarms.onAlarm.addListener(async (alarm) => {
 		}
 
 		// Update satedLevel
-		const satedLevel = gameStatus.sprite.satedLevel;
+		const satedLevel = StorePublic.ctx.store.sprite.satedLevel;
 		const satedLevelDiff = satedLevel.decrementValue * Math.floor(Math.abs(+new Date() - satedLevel.updatedAt) / 1000 / 60 / satedLevel.decrementEachMinutes);
 		if (satedLevelDiff) {
 			satedLevel.value = satedLevel.value - satedLevelDiff;
@@ -41,7 +40,7 @@ UtilsEngine.browser.alarms.onAlarm.addListener(async (alarm) => {
 		}
 
 		// Update energyLevel
-		const energyLevel = gameStatus.sprite.energyLevel;
+		const energyLevel = StorePublic.ctx.store.sprite.energyLevel;
 		const energyLevelDiff = energyLevel.decrementValue * Math.floor(Math.abs(+new Date() - energyLevel.updatedAt) / 1000 / 60 / energyLevel.decrementEachMinutes);
 		if (energyLevelDiff) {
 			energyLevel.value = energyLevel.value - energyLevelDiff;
@@ -51,7 +50,7 @@ UtilsEngine.browser.alarms.onAlarm.addListener(async (alarm) => {
 			energyLevel.updatedAt = +new Date();
 		}
 
-		await SpriteEngine.updateGameStatus(gameStatus);
+		await StorePublic.ctx.updateState(StorePublic.ctx);
 	}
 });
 

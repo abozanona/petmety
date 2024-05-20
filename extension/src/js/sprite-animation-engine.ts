@@ -1,7 +1,7 @@
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
-import { store } from "./store";
+import { store } from "./engines";
 import { Point2d } from "./edge-detector";
 import { UtilsEngine } from "./utils/utils";
 import { Parser } from "expr-eval";
@@ -10,6 +10,7 @@ import { CharacterAnimation } from "./player-engine";
 import { logger } from "./utils/logger";
 import { Constants } from "./utils/constants";
 import { GSAPHelper } from "./utils/gsap-helper";
+import { StorePublic } from "../app/app-context/store-context";
 
 type SpriteAnimationEngineOptions = {};
 
@@ -62,8 +63,8 @@ export class SpriteAnimationEngine {
 			...moveTo,
 			duration: distance / 30,
 			onComplete: () => {
-				SpriteEngine.gameStatus.sprite.currentEdge = edge;
-				SpriteEngine.updateGameStatus(SpriteEngine.gameStatus);
+				StorePublic.ctx.store.sprite.currentEdge = edge;
+				StorePublic.ctx.updateState(StorePublic.ctx);
 
 				store.spriteEngine.customActionRunning = undefined;
 			},

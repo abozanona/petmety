@@ -1,9 +1,6 @@
-import { Edge } from "./edge-detector";
-import { SpawnableObject } from "./spawnable-objects/spawnable-object";
-import { store } from "./store";
+import { store } from "./engines";
 import { Constants } from "./utils/constants";
 import { GSAPHelper } from "./utils/gsap-helper";
-import { SettingName, UtilsEngine } from "./utils/utils";
 
 type SpriteEngineOptions = {};
 
@@ -11,66 +8,6 @@ export enum SpriteDirection {
 	LEFT,
 	RIGHT,
 }
-
-export type GameStatus = {
-	sprite: {
-		isSleeping: boolean;
-		happinessLevel: {
-			value: number;
-			updatedAt: number;
-			decrementEachMinutes: number;
-			decrementValue: number;
-		};
-		satedLevel: {
-			value: number;
-			updatedAt: number;
-			decrementEachMinutes: number;
-			decrementValue: number;
-		};
-		energyLevel: {
-			value: number;
-			updatedAt: number;
-			decrementEachMinutes: number;
-			decrementValue: number;
-		};
-		currentEdge: Edge | undefined;
-	};
-	player: {
-		level: number;
-		levelProgress: number;
-	};
-	spawnedObjects: SpawnableObject[];
-};
-
-export const defaultGameStatus: GameStatus = {
-	sprite: {
-		isSleeping: false,
-		happinessLevel: {
-			value: 100,
-			updatedAt: +new Date(),
-			decrementEachMinutes: 10,
-			decrementValue: 5,
-		},
-		satedLevel: {
-			value: 100,
-			updatedAt: +new Date(),
-			decrementEachMinutes: 10,
-			decrementValue: 5,
-		},
-		energyLevel: {
-			value: 100,
-			updatedAt: +new Date(),
-			decrementEachMinutes: 10,
-			decrementValue: 5,
-		},
-		currentEdge: undefined,
-	},
-	player: {
-		level: 5,
-		levelProgress: 13,
-	},
-	spawnedObjects: [],
-};
 
 export enum CustomAction {
 	PETTING,
@@ -117,26 +54,7 @@ export class SpriteEngine {
 		this._direction = newValue;
 	}
 
-	public async updateSpriteStatus() {
-		await SpriteEngine.updateGameStatus(SpriteEngine.gameStatus);
-		// read curent sprite status. If no status exists, get default one
-	}
-
-	public static gameStatus: GameStatus = defaultGameStatus;
-
-	public static updateGameStatus(gameStatus: GameStatus): Promise<void> {
-		return UtilsEngine.setSettings(SettingName.GAME_STATUS, gameStatus);
-	}
-
-	public static async getGameStatus(): Promise<GameStatus> {
-		SpriteEngine.gameStatus = await UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameStatus);
-		return SpriteEngine.gameStatus;
-	}
-
 	constructor(opt: Partial<SpriteEngineOptions>) {
 		this.options = { ...this.defaultOptions, ...opt };
-		SpriteEngine.getGameStatus().then((gameStatus: GameStatus) => {
-			SpriteEngine.gameStatus = gameStatus;
-		});
 	}
 }

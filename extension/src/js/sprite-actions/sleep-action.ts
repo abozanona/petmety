@@ -1,7 +1,7 @@
 import { CharacterAnimation } from "../player-engine";
-import { SpriteEngine } from "../sprite-engine";
-import { store } from "../store";
+import { store } from "../engines";
 import { ActionPriority, SpriteAction } from "./sprite-action";
+import { StorePublic } from "../../app/app-context/store-context";
 
 export class SleepAction extends SpriteAction {
 	public priority: ActionPriority = ActionPriority.ACTION_SLEEP;
@@ -9,7 +9,7 @@ export class SleepAction extends SpriteAction {
 	public maxExecutionTime: number = 60;
 	private isSleepAnimationExecuted: boolean = false;
 	public async selectionPrecondition() {
-		return SpriteEngine.gameStatus.sprite.isSleeping;
+		return StorePublic.ctx.store.sprite.isSleeping;
 	}
 	public async start() {
 		if (!this.isSleepAnimationExecuted) {
