@@ -1,11 +1,10 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const webpack = require("webpack");
 
 module.exports = {
 	entry: {
-		"objects-sprite": path.resolve("./src/app/objects-sprite.tsx"),
+		index: path.resolve("./src/app/index.tsx"),
 		popup: path.resolve("./popup.html"),
 		backgound: path.resolve("./src/js/background.ts"),
 		"content-style": path.resolve("./src/style/content-style.scss"),
@@ -43,10 +42,10 @@ module.exports = {
 				test: /\.scss$/,
 				use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
 			},
-			// {
-			//     test: /\.css$/i,
-			//     use: ['style-loader', 'css-loader'],
-			// },
+			{
+				test: /\.css$/i,
+				use: ["style-loader", "css-loader"],
+			},
 			{
 				test: /\.html$/,
 				use: ["html-loader"],

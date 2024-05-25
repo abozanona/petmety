@@ -1,6 +1,6 @@
 import { SpriteAnimationEngine } from "../js/sprite-animation-engine";
 import { EdgeDetector } from "../js/edge-detector";
-import { MenuEngine } from "../js/MenuEngine";
+import { MenuEngine } from "../js/menu-engine";
 import { PlayerEngine } from "../js/player-engine";
 import { SpriteActionsEngine } from "../js/sprite-actions-engine";
 import { SpriteEngine } from "../js/sprite-engine";
