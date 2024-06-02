@@ -1,6 +1,5 @@
 import { SpriteAnimationEngine } from "../js/sprite-animation-engine";
 import { EdgeDetector } from "../js/edge-detector";
-import { MenuEngine } from "../js/menu-engine";
 import { PlayerEngine } from "../js/player-engine";
 import { SpriteActionsEngine } from "../js/sprite-actions-engine";
 import { SpriteEngine } from "../js/sprite-engine";
@@ -23,9 +22,6 @@ export const renderPet = async () => {
 	store.playerEngine = new PlayerEngine();
 
 	store.animationEngine = new SpriteAnimationEngine({});
-
-	store.menuEngine = new MenuEngine();
-	await store.menuEngine.init();
 
 	store.spriteEngine = new SpriteEngine({});
 	return elem;

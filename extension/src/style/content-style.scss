@@ -59,34 +59,6 @@
 	}
 }
 
-.vp-sprite-menu {
-	position: absolute;
-	left: 50%;
-	transform: translate(-50%, -100%);
-	cursor: unset;
-
-	.vp-sprite-menu-list {
-		position: absolute;
-		left: 50%;
-		transform: translate(-50%, -100%);
-		display: flex;
-		flex-direction: row;
-
-		.vp-sprite-menu-list-item {
-			width: 50px;
-			height: 50px;
-			margin: 5px;
-			background-color: #ccc;
-			border: solid;
-			cursor: pointer;
-		}
-	}
-}
-
-.vp-hidden {
-	display: none !important;
-}
-
 svg.vp-animation-debug {
 	path {
 		stroke-width: 2;
@@ -108,9 +80,6 @@ svg.vp-animation-debug {
 	height: 100% !important;
 	z-index: 2147483647 !important;
 }
-.vp-spawned-objects-target {
+#vp-app-react-container {
 	position: fixed;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
 }

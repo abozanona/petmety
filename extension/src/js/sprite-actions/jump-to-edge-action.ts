@@ -9,7 +9,7 @@ export class JumpToEdgeAction extends SpriteAction {
 	public minExecutionTime: number = 30;
 	public maxExecutionTime: number = 30;
 	public async selectionPrecondition() {
-		return !StorePublic.ctx.store.sprite.isSleeping;
+		return !StorePublic.ctx.store.storage.sprite.isSleeping;
 	}
 	public async start() {
 		const edges = store.edgeDetector.topVisibleEdges.filter((edge) => edge.rectType !== RectType.WINDOW);

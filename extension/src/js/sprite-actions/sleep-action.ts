@@ -9,7 +9,7 @@ export class SleepAction extends SpriteAction {
 	public maxExecutionTime: number = 60;
 	private isSleepAnimationExecuted: boolean = false;
 	public async selectionPrecondition() {
-		return StorePublic.ctx.store.sprite.isSleeping;
+		return StorePublic.ctx.store.storage.sprite.isSleeping;
 	}
 	public async start() {
 		if (!this.isSleepAnimationExecuted) {

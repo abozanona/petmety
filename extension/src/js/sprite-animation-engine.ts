@@ -63,7 +63,7 @@ export class SpriteAnimationEngine {
 			...moveTo,
 			duration: distance / 30,
 			onComplete: () => {
-				StorePublic.ctx.store.sprite.currentEdge = edge;
+				StorePublic.ctx.store.currentEdge = edge;
 				StorePublic.ctx.updateState(StorePublic.ctx);
 
 				store.spriteEngine.customActionRunning = undefined;

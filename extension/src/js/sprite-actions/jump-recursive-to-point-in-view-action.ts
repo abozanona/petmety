@@ -11,7 +11,7 @@ export class jumpRecursiveToPointInViewAction extends SpriteAction {
 	private destinationVisiblePoint: Point2d = this.getVisiblePoint();
 
 	public async selectionPrecondition() {
-		return !StorePublic.ctx.store.sprite.isSleeping && !this.isSpriteInviewPort();
+		return !StorePublic.ctx.store.storage.sprite.isSleeping && !this.isSpriteInviewPort();
 	}
 	public async start() {
 		while (!this.isCanceled && !this.isSpriteInviewPort()) {

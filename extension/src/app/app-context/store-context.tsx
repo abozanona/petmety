@@ -8,33 +8,36 @@ interface Props {
 }
 
 export interface StoreGameStatus {
-	sprite: {
-		isSleeping: boolean;
-		happinessLevel: {
-			value: number;
-			updatedAt: number;
-			decrementEachMinutes: number;
-			decrementValue: number;
+	storage: {
+		sprite: {
+			isSleeping: boolean;
+			happinessLevel: {
+				value: number;
+				updatedAt: number;
+				decrementEachMinutes: number;
+				decrementValue: number;
+			};
+			satedLevel: {
+				value: number;
+				updatedAt: number;
+				decrementEachMinutes: number;
+				decrementValue: number;
+			};
+			energyLevel: {
+				value: number;
+				updatedAt: number;
+				decrementEachMinutes: number;
+				decrementValue: number;
+			};
 		};
-		satedLevel: {
-			value: number;
-			updatedAt: number;
-			decrementEachMinutes: number;
-			decrementValue: number;
+		player: {
+			level: number;
+			levelProgress: number;
 		};
-		energyLevel: {
-			value: number;
-			updatedAt: number;
-			decrementEachMinutes: number;
-			decrementValue: number;
-		};
-		currentEdge: Edge | undefined;
+		spawnedObjects: SpawnableObject[];
 	};
-	player: {
-		level: number;
-		levelProgress: number;
-	};
-	spawnedObjects: SpawnableObject[];
+	currentEdge: Edge | undefined;
+	isSpawnedSpritesMenuVisible: boolean;
 }
 
 /**
@@ -50,33 +53,36 @@ export interface AppState {
  */
 const defaultGameState: AppState = {
 	store: {
-		sprite: {
-			isSleeping: false,
-			happinessLevel: {
-				value: 100,
-				updatedAt: +new Date(),
-				decrementEachMinutes: 10,
-				decrementValue: 5,
+		storage: {
+			sprite: {
+				isSleeping: false,
+				happinessLevel: {
+					value: 100,
+					updatedAt: +new Date(),
+					decrementEachMinutes: 10,
+					decrementValue: 5,
+				},
+				satedLevel: {
+					value: 100,
+					updatedAt: +new Date(),
+					decrementEachMinutes: 10,
+					decrementValue: 5,
+				},
+				energyLevel: {
+					value: 100,
+					updatedAt: +new Date(),
+					decrementEachMinutes: 10,
+					decrementValue: 5,
+				},
 			},
-			satedLevel: {
-				value: 100,
-				updatedAt: +new Date(),
-				decrementEachMinutes: 10,
-				decrementValue: 5,
+			player: {
+				level: 5,
+				levelProgress: 13,
 			},
-			energyLevel: {
-				value: 100,
-				updatedAt: +new Date(),
-				decrementEachMinutes: 10,
-				decrementValue: 5,
-			},
-			currentEdge: undefined,
+			spawnedObjects: [],
 		},
-		player: {
-			level: 5,
-			levelProgress: 13,
-		},
-		spawnedObjects: [],
+		currentEdge: undefined,
+		isSpawnedSpritesMenuVisible: false,
 	},
 	updateState: (newState?: Partial<AppState>) => {},
 };
@@ -97,8 +103,8 @@ export const StoreContextProvider: React.FunctionComponent<Props> = (props: Prop
 		store: defaultGameState.store,
 	});
 
-	UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameState.store).then((gameStatus) => {
-		setState({ store: gameStatus });
+	UtilsEngine.getSettings(SettingName.GAME_STATUS, defaultGameState.store.storage).then((gameStatus) => {
+		setState({ store: { ...(StorePublic.ctx.store ?? defaultGameState.store), storage: gameStatus } });
 	});
 
 	/**
@@ -107,7 +113,7 @@ export const StoreContextProvider: React.FunctionComponent<Props> = (props: Prop
 	const updateState = (newState: Partial<AppState>) => {
 		const updatedState = { ...state, ...newState };
 		setState(updatedState);
-		return UtilsEngine.setSettings(SettingName.GAME_STATUS, updatedState.store);
+		return UtilsEngine.setSettings(SettingName.GAME_STATUS, updatedState.store.storage);
 	};
 
 	/**

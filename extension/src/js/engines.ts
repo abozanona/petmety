@@ -1,6 +1,5 @@
 import { SpriteAnimationEngine } from "./sprite-animation-engine";
 import { EdgeDetector } from "./edge-detector";
-import { MenuEngine } from "./MenuEngine";
 import { PlayerEngine } from "./player-engine";
 import { SpriteActionsEngine } from "./sprite-actions-engine";
 import { SpriteEngine } from "./sprite-engine";
@@ -17,9 +16,6 @@ class Engines {
 
 	// @ts-ignore:next-line
 	public spriteEngine: SpriteEngine;
-
-	// @ts-ignore:next-line
-	public menuEngine: MenuEngine;
 
 	// @ts-ignore:next-line
 	public spriteActionsEngine: SpriteActionsEngine;

@@ -6,8 +6,8 @@ import { Constants } from "./utils/constants";
 export class ObjectInstantiatorEngine {
 	public static async initiateObject(spawnableObject: SpawnableObject, position: { left: number; top: number }) {
 		// check if object was already instantiated
-		if (!StorePublic.ctx.store.spawnedObjects.find((el) => el.id == spawnableObject.id)) {
-			StorePublic.ctx.store.spawnedObjects.push(spawnableObject);
+		if (!StorePublic.ctx.store.storage.spawnedObjects.find((el) => el.id == spawnableObject.id)) {
+			StorePublic.ctx.store.storage.spawnedObjects.push(spawnableObject);
 			StorePublic.ctx.updateState(StorePublic.ctx);
 		}
 

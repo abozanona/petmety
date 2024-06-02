@@ -14,9 +14,9 @@ export class EatFoodAction extends SpriteAction {
 		const tabId = await UtilsEngine.getTabId();
 		// TODO: Need to load it async in the future
 		return (
-			!StorePublic.ctx.store.sprite.isSleeping && // Not sleepint
-			StorePublic.ctx.store.sprite.satedLevel.value < 60 && // Hungry
-			StorePublic.ctx.store.spawnedObjects.some(
+			!StorePublic.ctx.store.storage.sprite.isSleeping && // Not sleepint
+			StorePublic.ctx.store.storage.sprite.satedLevel.value < 60 && // Hungry
+			StorePublic.ctx.store.storage.spawnedObjects.some(
 				(el) =>
 					el.category === ObjectInstantiatorCategory.CAT_FOOD && // It's a food
 					el.remainingValue > 0 &&
@@ -26,7 +26,7 @@ export class EatFoodAction extends SpriteAction {
 		);
 	}
 	public async start() {
-		const objectToEat = StorePublic.ctx.store.spawnedObjects
+		const objectToEat = StorePublic.ctx.store.storage.spawnedObjects
 			.filter((el) => el.category === ObjectInstantiatorCategory.CAT_FOOD && el.remainingValue > 0)
 			.sort((_, __) => Math.random() - Math.random())[0];
 		const objectDomRect = document.querySelector(`[data-vp_object_id="${objectToEat.id}"]`)!.getBoundingClientRect();
@@ -35,16 +35,16 @@ export class EatFoodAction extends SpriteAction {
 			y: objectDomRect.top + objectDomRect.height,
 		});
 		store.playerEngine.playAnimation(CharacterAnimation.Eating, { loop: true });
-		while (!this.isCanceled && StorePublic.ctx.store.sprite.satedLevel.value != 100 && objectToEat.remainingValue !== 0) {
-			const amountToEat = Math.min(10, objectToEat.remainingValue, 100 - StorePublic.ctx.store.sprite.satedLevel.value);
+		while (!this.isCanceled && StorePublic.ctx.store.storage.sprite.satedLevel.value != 100 && objectToEat.remainingValue !== 0) {
+			const amountToEat = Math.min(10, objectToEat.remainingValue, 100 - StorePublic.ctx.store.storage.sprite.satedLevel.value);
 
-			const originalObjectToEat = StorePublic.ctx.store.spawnedObjects.find((el) => el.id === objectToEat.id);
+			const originalObjectToEat = StorePublic.ctx.store.storage.spawnedObjects.find((el) => el.id === objectToEat.id);
 			if (originalObjectToEat === undefined) {
 				break;
 			}
 			originalObjectToEat.remainingValue -= 10;
 			originalObjectToEat.updatedAt = +new Date();
-			StorePublic.ctx.store.sprite.satedLevel.value += amountToEat;
+			StorePublic.ctx.store.storage.sprite.satedLevel.value += amountToEat;
 			StorePublic.ctx.updateState(StorePublic.ctx);
 			UtilsEngine.wait(3 * 1000);
 		}
