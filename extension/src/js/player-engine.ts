@@ -33,6 +33,7 @@ export class PlayerEngine {
 	private mouseMovementCallback() {
 		this.mouseMovementCounter++;
 		if (this.mouseMovementCounter > 4 && this.mouseMovementCounter % 4 == 0) {
+			store.spriteEngine.customActionRunning = CustomAction.PETTING;
 			store.playerEngine.showHearts();
 		}
 	}
@@ -47,7 +48,6 @@ export class PlayerEngine {
 			if (store.spriteEngine.customActionRunning !== undefined && store.spriteEngine.customActionRunning !== CustomAction.PETTING) {
 				return;
 			}
-			store.spriteEngine.customActionRunning = CustomAction.PETTING;
 			mouseMovementCallbackThrottle();
 			mouseMovementOffCallback();
 		};
