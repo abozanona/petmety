@@ -1,6 +1,36 @@
 .vp-spawned-sprites-container {
 	position: fixed;
+	z-index: 99999999;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
+	background: linear-gradient(180deg, #f8f3c9 67.99%, #f9e3c2 68%);
+	padding: 40px;
+	border: solid 4px #fff;
+	border-radius: 30px;
+
+	.vp-spawned-sprites-container-inner {
+		border: solid 5px #e8a74f;
+		border-radius: 30px;
+		padding: 30px;
+		background: -webkit-repeating-linear-gradient(#20ffc9, #20ffc9 50px, #dcebfc 50px, #dcebfc 70px, #b6d5f7 70px, #b6d5f7 82px);
+		background: -moz-repeating-linear-gradient(#20ffc9, #20ffc9 50px, #dcebfc 50px, #dcebfc 70px, #b6d5f7 70px, #b6d5f7 82px);
+		background: -o-repeating-linear-gradient(#20ffc9, #20ffc9 50px, #dcebfc 50px, #dcebfc 70px, #b6d5f7 70px, #b6d5f7 82px);
+		background: -ms-repeating-linear-gradient(#20ffc9, #20ffc9 50px, #dcebfc 50px, #dcebfc 70px, #b6d5f7 70px, #b6d5f7 82px);
+		background: repeating-linear-gradient(#20ffc9, #20ffc9 50px, #dcebfc 50px, #dcebfc 70px, #b6d5f7 70px, #b6d5f7 82px);
+
+		.spawned-block {
+			display: flex;
+			align-items: center;
+			justify-content: space-around;
+
+			.spawned-label {
+				border: solid 2px #7b7b7b;
+				border-radius: 6px;
+				background-color: #f8f3c9;
+				color: #fff;
+				padding: 2px 4px;
+			}
+		}
+	}
 }

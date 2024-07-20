@@ -7,11 +7,12 @@ function SpawnedSprites() {
 	return (
 		ctx.store.isSpawnedSpritesMenuVisible && (
 			<div className="vp-spawned-sprites-container">
-				<div>
+				<div className="vp-spawned-sprites-container-inner">
 					{ctx.store.storage.spawnedObjects.map((spawnedObject, index) => {
 						return (
-							<div key={spawnedObject.id}>
-								<img width="50" height="50" src={spawnedObject.imagePath} title={spawnedObject.title} /> {spawnedObject.title}
+							<div className="spawned-block" key={spawnedObject.id}>
+								<img width="50" height="50" src={spawnedObject.imagePath} title={spawnedObject.title} />
+								<span className="spawned-label">{spawnedObject.title}</span>
 							</div>
 						);
 					})}

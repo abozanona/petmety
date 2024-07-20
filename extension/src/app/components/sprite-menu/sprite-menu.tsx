@@ -18,10 +18,14 @@ function SpriteMenu() {
 				const menuContainerOffset = menuContainerElement.getBoundingClientRect();
 
 				menuElement.style.position = "fixed";
-				menuElement.style.left = Math.abs(menuContainerOffset.left - reactAppOffset.left) + menuContainerOffset.width / 2 + "px";
-				menuElement.style.top = menuContainerOffset.top + "px";
+				if (getComputedStyle(document.documentElement).direction === "rtl" || getComputedStyle(document.body).direction === "rtl") {
+					menuElement.style.right = Math.abs(menuContainerOffset.right - reactAppOffset.right) + menuContainerOffset.width / 2 + "px";
+				} else {
+					menuElement.style.left = Math.abs(menuContainerOffset.left - reactAppOffset.left) + menuContainerOffset.width / 2 + "px";
+				}
+				menuElement.style.top = menuContainerOffset.top - menuElement.getBoundingClientRect().height - 10 + "px";
 			}
-		}, 50);
+		}, 16);
 	}, []);
 
 	const [state, setState] = useState({
