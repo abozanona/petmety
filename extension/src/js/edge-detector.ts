@@ -24,6 +24,7 @@ export type Edge = {
 	start: Point2d;
 	end: Point2d;
 	size: number;
+	dom: HTMLElement;
 };
 
 export enum RectType {
@@ -37,6 +38,7 @@ type Rect = {
 	rectType: RectType;
 	visibility: RectVisibility;
 	translate: RectTranslate;
+	dom: HTMLElement;
 };
 
 type RectVisibility = {
@@ -61,9 +63,11 @@ type RectVisibility = {
 class RectTranslate {
 	private rect: DOMRect;
 	private rectType: RectType;
-	public constructor(rect: DOMRect, rectType: RectType) {
+	private dom: HTMLElement;
+	public constructor(rect: DOMRect, rectType: RectType, dom: HTMLElement) {
 		this.rect = rect;
 		this.rectType = rectType;
+		this.dom = dom;
 	}
 
 	public get topEdge(): Edge {
@@ -79,6 +83,7 @@ class RectTranslate {
 				y: this.rect.y,
 			},
 			size: this.rect.width,
+			dom: this.dom,
 		};
 	}
 
@@ -95,6 +100,7 @@ class RectTranslate {
 				y: this.rect.y + this.rect.height,
 			},
 			size: this.rect.width,
+			dom: this.dom,
 		};
 	}
 
@@ -111,6 +117,7 @@ class RectTranslate {
 				y: this.rect.y + this.rect.height,
 			},
 			size: this.rect.height,
+			dom: this.dom,
 		};
 	}
 
@@ -127,6 +134,7 @@ class RectTranslate {
 				y: this.rect.y + this.rect.height,
 			},
 			size: this.rect.height,
+			dom: this.dom,
 		};
 	}
 
@@ -255,7 +263,12 @@ export class EdgeDetector {
 					offset: 0,
 				},
 			},
-			translate: new RectTranslate(new DOMRect(0, 0, window.innerWidth || document.documentElement.clientWidth, window.innerHeight || document.documentElement.clientHeight), RectType.WINDOW),
+			translate: new RectTranslate(
+				new DOMRect(0, 0, window.innerWidth || document.documentElement.clientWidth, window.innerHeight || document.documentElement.clientHeight),
+				RectType.WINDOW,
+				document.body
+			),
+			dom: document.body,
 		});
 		this.caclulateEdges(this.options.startNode);
 		let isScrolling: NodeJS.Timeout;
@@ -398,7 +411,8 @@ export class EdgeDetector {
 			this._foundRects.push({
 				rectType: rectType,
 				visibility: edgesVisibility,
-				translate: new RectTranslate(nodeRect, rectType),
+				translate: new RectTranslate(nodeRect, rectType, node),
+				dom: node,
 			});
 		}
 		let _this = this;

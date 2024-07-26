@@ -3,7 +3,7 @@ import { EdgeDetector, Point2d } from "../edge-detector";
 import { store } from "../engines";
 import { ActionPriority, SpriteAction } from "./sprite-action";
 
-export class jumpRecursiveToPointInViewAction extends SpriteAction {
+export class JumpRecursiveToPointInViewAction extends SpriteAction {
 	public priority: ActionPriority = ActionPriority.ACTION_JUMP_RECURSIVE_TO_POINT_IN_VIEW;
 	public minExecutionTime: number = 60;
 	public maxExecutionTime: number = 60;

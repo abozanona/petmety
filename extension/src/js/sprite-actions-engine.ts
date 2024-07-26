@@ -1,15 +1,6 @@
 import { ICompare, PriorityQueue } from "@datastructures-js/priority-queue";
 import { logger } from "./utils/logger";
-import {
-	IdleAction,
-	JumpAction,
-	SleepAction,
-	SpriteAction,
-	jumpRecursiveToPointInViewAction as JumpRecursiveToPointInViewAction,
-	WalkOnEdgeAction,
-	JumpToEdgeAction,
-	EatFoodAction,
-} from "./sprite-actions";
+import { IdleAction, JumpAction, SleepAction, SpriteAction, JumpRecursiveToPointInViewAction, WalkOnEdgeAction, JumpToEdgeAction, EatFoodAction, ScatterLettersAction } from "./sprite-actions";
 import { throttle } from "throttle-debounce";
 import { store } from "./engines";
 
@@ -24,6 +15,7 @@ const fillAvailableActions = () => {
 	allActions.push(new WalkOnEdgeAction());
 	allActions.push(new JumpToEdgeAction());
 	allActions.push(new EatFoodAction());
+	allActions.push(new ScatterLettersAction());
 };
 
 export class SpriteActionsEngine {

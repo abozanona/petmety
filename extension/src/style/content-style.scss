@@ -83,3 +83,14 @@ svg.vp-animation-debug {
 #vp-app-react-container {
 	position: fixed;
 }
+vp-scattered-span {
+	position: relative;
+	vp-scattered-letter {
+		position: absolute;
+		z-index: 2147483647 !important;
+		cursor: pointer;
+	}
+	vp-placeholder-letter {
+		visibility: hidden;
+	}
+}
