@@ -29,3 +29,7 @@ Thumbs.db
 
 #Environment files
 .env
+
+## Pose detection
+pose_detection/input
+pose_detection/output
