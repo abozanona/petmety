@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if [ "$1" == "" ]; then
-    echo "Usage: ./direct_run.sh /path/to/animal_image.jpg"
-    exit 1
-fi
-
 mkdir -p input output
-cp "$1" input/
+
+if [ "$1" != "" ]; then
+    cp "$1" input/
+fi
 
 docker build --platform linux/arm64 -t mmpose-animal-m2 .
 

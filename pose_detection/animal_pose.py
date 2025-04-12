@@ -3,6 +3,7 @@ import numpy as np
 import mmcv
 from mmpose.utils import register_all_modules
 from mmpose.apis import MMPoseInferencer
+import json
 
 input_dir = 'input'
 output_dir = 'output'
@@ -38,6 +39,7 @@ def process_video(input_path, inferencer):
         predictions = result["predictions"][0][0]
         keypoints = np.array(predictions["keypoints"])
         keypoint_scores = np.array(predictions["keypoint_scores"])
+        print(f"<start>{json.dumps(keypoints.tolist())}<end>")
 
 def process_image(input_path, inferencer):
     result_generator = inferencer(input_path, vis_out_dir=output_dir)
